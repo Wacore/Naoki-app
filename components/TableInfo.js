@@ -3,17 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function TableInfo({ peopleNum, type, tableNum }) {
+export default function TableInfo({
+  peopleNum,
+  type,
+  tableNum,
+  pickupTime,
+  name,
+}) {
   return (
     <View style={styles.infoBox}>
-      <View style={styles.infoDetails}>
-        <MaterialCommunityIcons
-          name="human-male-male"
-          size={25}
-          color={colors.medium}
-        />
-        <Text style={styles.title}> : {peopleNum} </Text>
-      </View>
       <View style={styles.infoDetails}>
         <MaterialCommunityIcons name="food" size={25} color={colors.medium} />
         <Text style={styles.title}>
@@ -21,14 +19,46 @@ export default function TableInfo({ peopleNum, type, tableNum }) {
           : {type == true ? "Dine-in" : "To-go"}
         </Text>
       </View>
-      <View style={styles.infoDetails}>
-        <MaterialCommunityIcons
-          name="chair-rolling"
-          size={25}
-          color={colors.medium}
-        />
-        <Text style={styles.title}> : {tableNum}</Text>
-      </View>
+      {type == true && (
+        <>
+          <View style={styles.infoDetails}>
+            <MaterialCommunityIcons
+              name="human-male-male"
+              size={25}
+              color={colors.medium}
+            />
+            <Text style={styles.title}> : {peopleNum} </Text>
+          </View>
+          <View style={styles.infoDetails}>
+            <MaterialCommunityIcons
+              name="chair-rolling"
+              size={25}
+              color={colors.medium}
+            />
+            <Text style={styles.title}> : {tableNum}</Text>
+          </View>
+        </>
+      )}
+      {type != true && (
+        <>
+          <View style={styles.infoDetails}>
+            <MaterialCommunityIcons
+              name="account"
+              size={25}
+              color={colors.medium}
+            />
+            <Text style={styles.title}> : {name} </Text>
+          </View>
+          <View style={styles.infoDetails}>
+            <MaterialCommunityIcons
+              name="timer"
+              size={25}
+              color={colors.medium}
+            />
+            <Text style={styles.title}> : {pickupTime}</Text>
+          </View>
+        </>
+      )}
     </View>
   );
 }

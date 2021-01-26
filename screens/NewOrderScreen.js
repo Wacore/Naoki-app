@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 
 import AppButton from "../components/AppButton";
 import AppCounter from "../components/AppCounter";
@@ -16,12 +10,13 @@ import AppSwitch from "../components/AppSwitch";
 import colors from "../config/colors";
 import orderNum from "../data/orderNum";
 import Screen from "../components/Screen";
-
 import menu from "../data/menu.js";
 import OrderItem from "./OrderItem";
+import AppTextInput from "../components/AppTextInput";
+import { NavigationEvents } from "react-navigation";
 
 export default function NewOrderScreen({ route, navigation }) {
-  // console.log(route);
+  console.log(route);
 
   const initialList = orderNum;
 
@@ -33,6 +28,14 @@ export default function NewOrderScreen({ route, navigation }) {
   const [CounterNum, setCounterNum] = useState(0);
   const [orderList, setOrderList] = useState([]);
   const [orderNumber, setOrderNumber] = useState(1);
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [pickupTime, setPickupTime] = useState(0);
+  const [CurrentOrder, setCurrentOrder] = useState({
+    addition: "None",
+    amount: "None",
+    id: "None",
+  });
 
   const handleSwitchValue = () => {
     setIsDineIn((previousState) => !previousState);
@@ -51,10 +54,6 @@ export default function NewOrderScreen({ route, navigation }) {
     data[0].amount = res.amount;
     data[0].addition = res.addition;
     setOrderList([...orderList, data[0]]);
-    // setOrderList(data[0]);
-    // console.log(data[0]);
-
-    console.log(orderList);
   };
 
   const handleRemoveOrderList = (res) => {
@@ -63,13 +62,21 @@ export default function NewOrderScreen({ route, navigation }) {
 
   const handleSubmit = () => {
     if (orderList.length != 0) {
-      navigation.navigate("Orders", {
+      let order = {
         orderNum: orderNumber,
-        peopleNum: SelectedItem,
-        type: IsDineIn,
-        tableNum: SelectedTable,
         orders: orderList,
-      });
+      };
+      if (IsDineIn) {
+        order.peopleNum = SelectedItem;
+        order.type = IsDineIn;
+        order.tableNum = SelectedTable;
+      } else {
+        order.type = IsDineIn;
+        order.name = name;
+        order.phoneNumber = phoneNumber;
+        order.pickupTime = pickupTime;
+      }
+      navigation.navigate("Orders", order);
       setOrderList([]);
       setOrderNumber(orderNumber + 1);
       setIsDineIn(true);
@@ -78,12 +85,24 @@ export default function NewOrderScreen({ route, navigation }) {
     }
   };
 
+  const clearParams = () => {
+    navigation.setParams({});
+  };
+
   React.useEffect(() => {
-    if (route.params) {
+    let param;
+    if (route.params && route.params != CurrentOrder) {
+      // To-solve find a solution to the passing params twice problem
+      param = route.params;
+      setCurrentOrder(param);
+      // console.log(param);
       handleAddOrderList(route.params);
-      // console.log(route.params);
     }
   }, [route.params]);
+
+  const willFocusAction = (payload) => {
+    console.log(payload);
+  };
 
   return (
     <Screen appStyle={styles.container}>
@@ -119,12 +138,22 @@ export default function NewOrderScreen({ route, navigation }) {
       )}
       {!IsDineIn && (
         <>
-          <AppFormField name="name" placeholder="Name" icon="account" />
-          <AppFormField
-            name="phoneNum"
+          <AppTextInput
+            icon="account"
+            placeholder="Name"
+            onChangeText={(text) => setName(text)}
+          />
+          <AppTextInput
             placeholder="Phone Number"
             icon="phone"
             keyboardType="phone-pad"
+            onChangeText={(text) => setPhoneNumber(text)}
+          />
+          <AppTextInput
+            placeholder="Phone Number"
+            icon="timer"
+            keyboardType="phone-pad"
+            onChangeText={(text) => setPickupTime(text)}
           />
         </>
       )}

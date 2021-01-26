@@ -28,6 +28,7 @@ export default function MenuDetailScreen({ navigation, route }) {
         };
 
     navigation.navigate("Add", res);
+
     setAmount(1);
     setAddition("None");
   };

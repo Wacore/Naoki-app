@@ -27,19 +27,15 @@ export default function OrderListingScreen({ navigation, route }) {
   };
 
   const handleAddOrder = (item) => {
-    // console.log(item);
-    // let orderArr = orders;
-    // orderArr.push(route.params);
-    // // console.log(orderArr);
-    // setOrders(orderArr);
-
+    // item.orderNum = orderNum;
+    // setOrderNum(orderNum + 1);
     setOrders([...orders, item]);
   };
 
   React.useEffect(() => {
     if (route.params) {
+      console.log(route.params);
       handleAddOrder(route.params);
-      // console.log(typeof route.params);
     }
   }, [route.params]);
 
@@ -56,6 +52,8 @@ export default function OrderListingScreen({ navigation, route }) {
               peopleNum={item.peopleNum}
               type={item.type}
               tableNum={item.tableNum}
+              name={item.name}
+              pickupTime={item.pickupTime}
               onPress={() => navigation.navigate("Order", item)}
               renderRightAction={() => (
                 <ListItemDeleteAction onPress={() => handleDelete(item)} />
