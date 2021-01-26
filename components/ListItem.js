@@ -12,6 +12,8 @@ export default function ListItem({
   tableNum,
   renderRightAction,
   onPress,
+  name,
+  pickupTime,
 }) {
   return (
     <Swipeable renderRightActions={renderRightAction}>
@@ -20,7 +22,13 @@ export default function ListItem({
           <View style={styles.numBox}>
             <Text style={styles.number}>#{orderNum}</Text>
           </View>
-          <TableInfo peopleNum={peopleNum} type={type} tableNum={tableNum} />
+          <TableInfo
+            peopleNum={peopleNum}
+            type={type}
+            tableNum={tableNum}
+            name={name}
+            pickupTime={pickupTime}
+          />
           <MaterialCommunityIcons
             name="chevron-right"
             color={colors.medium}
