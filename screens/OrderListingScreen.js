@@ -8,16 +8,10 @@ import ListItemSeparator from "../components/ListItemSeparator";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-// const initialOrders = [
-//   { orderNum: 1, peopleNum: 4, type: "Dine-in", tableNum: 1 },
-//   { orderNum: 2, peopleNum: "none", type: "To-go", tableNum: "none" },
-//   { orderNum: 3, peopleNum: 5, type: "Dine-in", tableNum: 8 },
-// ];
-
 export default function OrderListingScreen({ navigation, route }) {
   const [orders, setOrders] = useState([]);
   const [refreshing, setreFreshing] = useState(false);
-  const [orderNum, setOrderNum] = useState(1);
+  const [currentOrder, setCurrentOrder] = useState({});
 
   // console.log(route.params);
 
@@ -29,12 +23,15 @@ export default function OrderListingScreen({ navigation, route }) {
   const handleAddOrder = (item) => {
     // item.orderNum = orderNum;
     // setOrderNum(orderNum + 1);
+
     setOrders([...orders, item]);
   };
 
   React.useEffect(() => {
-    if (route.params) {
-      console.log(route.params);
+    let param;
+    if (route.params && route.params != currentOrder) {
+      param = route.params;
+      setCurrentOrder(param);
       handleAddOrder(route.params);
     }
   }, [route.params]);
@@ -53,7 +50,6 @@ export default function OrderListingScreen({ navigation, route }) {
               type={item.type}
               tableNum={item.tableNum}
               name={item.name}
-              pickupTime={item.pickupTime}
               onPress={() => navigation.navigate("Order", item)}
               renderRightAction={() => (
                 <ListItemDeleteAction onPress={() => handleDelete(item)} />
