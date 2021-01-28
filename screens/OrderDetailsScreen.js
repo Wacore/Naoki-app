@@ -1,21 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, SectionList } from "react-native";
 
 import AppText from "../components/AppText";
 import colors from "../config/colors";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import _ from "lodash";
 
 import OrderItem from "./OrderItem";
 import sortingOrders from "../data/orderSorting";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function OrderDetailsScreen({ route }) {
   const { orderNum, orders, peopleNum, tableNum, type } = route.params;
-  // const { orderNum, orders, peopleNum, tableNum, type } = item;
 
-  const handleFinishOrder = (orders) => {
+  const [order, setOrder] = useState({});
+  const [toBeEdit, setToBeEdit] = useState(false);
+
+  const handleFinishItem = (orders) => {
     console.log(orders);
+  };
+
+  const handleEditOrder = (key) => {
+    console.log("eidt");
+    saveOrder();
+    setToBeEdit(true);
+  };
+
+  const handleCompleteEditOrder = (key) => {
+    console.log("Done");
+    saveOrder();
+    setToBeEdit(false);
+  };
+
+  const saveOrder = () => {
+    let prevOrder = {
+      orderNum: orderNum,
+      orders: orderList,
+      peopleNum: peopleNum,
+      tableNum: tableNum,
+      type: type,
+    };
+    setOrder(prevOrder);
   };
 
   let orderList = sortingOrders(orders);
@@ -30,7 +55,15 @@ export default function OrderDetailsScreen({ route }) {
         )}
         <AppText>Table: {tableNum}</AppText>
         <AppText>People: {peopleNum}</AppText>
-        <MaterialCommunityIcons name="bell" size={18} color={colors.primary} />
+        {toBeEdit ? (
+          <TouchableOpacity onPress={() => handleCompleteEditOrder(orderNum)}>
+            <AppText appStyle={{ color: colors.primary }}>Done</AppText>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={() => handleEditOrder(orderNum)}>
+            <AppText appStyle={{ color: colors.primary }}>Edit</AppText>
+          </TouchableOpacity>
+        )}
       </View>
       <SectionList
         sections={orderList}
@@ -40,7 +73,7 @@ export default function OrderDetailsScreen({ route }) {
             name={item.name}
             amount={item.amount}
             addition={item.addition}
-            onRemoveOrder={() => handleFinishOrder(item)}
+            onRemoveOrder={() => handleFinishItem(item)}
           />
         )}
         renderSectionHeader={({ section: { title } }) => (
