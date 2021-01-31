@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, SectionList } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SectionList,
+  TouchableOpacity,
+} from "react-native";
 
 import AppText from "../components/AppText";
 import colors from "../config/colors";
@@ -8,26 +14,42 @@ import _ from "lodash";
 
 import OrderItem from "./OrderItem";
 import sortingOrders from "../data/orderSorting";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function OrderDetailsScreen({ route }) {
-  const { orderNum, orders, peopleNum, tableNum, type } = route.params;
+  const { orderNum } = route.params;
 
   const [order, setOrder] = useState({});
   const [toBeEdit, setToBeEdit] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
 
-  const handleFinishItem = (orders) => {
-    console.log(orders);
+  const handleFinishItem = (itemId) => {
+    if (isStarted) {
+      console.log("finished");
+      saveOrder();
+      let { orders } = order;
+      let index = (index = _.findIndex(orders, function (item) {
+        return item.id == itemId;
+      }));
+      let prevOrder = order;
+      prevOrder.orders[index].isSent = true;
+      setOrder(prevOrder);
+    } else {
+      alert("Order has not started");
+    }
+  };
+
+  const handleStartOrder = () => {
+    saveOrder();
+    setIsStarted(true);
   };
 
   const handleEditOrder = (key) => {
-    console.log("eidt");
     saveOrder();
     setToBeEdit(true);
   };
 
   const handleCompleteEditOrder = (key) => {
-    console.log("Done");
     saveOrder();
     setToBeEdit(false);
   };
@@ -35,7 +57,7 @@ export default function OrderDetailsScreen({ route }) {
   const saveOrder = () => {
     let prevOrder = {
       orderNum: orderNum,
-      orders: orderList,
+      orders: orders,
       peopleNum: peopleNum,
       tableNum: tableNum,
       type: type,
@@ -43,11 +65,17 @@ export default function OrderDetailsScreen({ route }) {
     setOrder(prevOrder);
   };
 
-  let orderList = sortingOrders(orders);
+  // let orderList = sortingOrders(orders);
+
+  useEffect(() => {
+    console.log("effect");
+    console.log(route.params);
+    // orderList = sortingOrders(order);
+  });
 
   return (
     <Screen appStyle={{ backgroundColor: colors.light, padding: 0 }}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         {type ? (
           <AppText>Order Number: #{orderNum}</AppText>
         ) : (
@@ -73,13 +101,27 @@ export default function OrderDetailsScreen({ route }) {
             name={item.name}
             amount={item.amount}
             addition={item.addition}
-            onRemoveOrder={() => handleFinishItem(item)}
+            isSent={item.isSent}
+            onFinishItem={() => handleFinishItem(item.id)}
           />
         )}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.headerTitle}>{title}</Text>
         )}
       />
+      <TouchableOpacity
+        style={styles.startContainer}
+        onPress={() => handleStartOrder()}
+      >
+        <MaterialCommunityIcons
+          name="play-circle"
+          size={75}
+          color={colors.primary}
+        />
+      </TouchableOpacity> */}
+      <View>
+        <Text>{orderNum}</Text>
+      </View>
     </Screen>
   );
 }
@@ -110,4 +152,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
   },
+  startContainer: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  startIcon: {},
 });

@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 
-import Screen from "../components/Screen";
 import ListItem from "../components/ListItem";
-import colors from "../config/colors";
 import ListItemSeparator from "../components/ListItemSeparator";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
 export default function OrderListingScreen({ navigation, route }) {
   const [orders, setOrders] = useState([]);
   const [refreshing, setreFreshing] = useState(false);
   const [currentOrder, setCurrentOrder] = useState({});
 
-  // console.log(route.params);
+  const orderlist = useSelector((state) => state.orderlist);
+  const type = useSelector((state) => state.type);
+
+  console.log(orderlist);
+  console.log(type);
 
   const handleDelete = (item) => {
     const newOrders = orders.filter((o) => o.orderNum != item.orderNum);
@@ -21,9 +23,6 @@ export default function OrderListingScreen({ navigation, route }) {
   };
 
   const handleAddOrder = (item) => {
-    // item.orderNum = orderNum;
-    // setOrderNum(orderNum + 1);
-
     setOrders([...orders, item]);
   };
 
@@ -41,8 +40,8 @@ export default function OrderListingScreen({ navigation, route }) {
     <View style={styles.container}>
       {orders && (
         <FlatList
-          data={orders}
-          keyExtractor={(orders) => orders.orderNum.toString()}
+          data={orderlist}
+          keyExtractor={(orderlist) => orderlist.orderNum.toString()}
           renderItem={({ item }) => (
             <ListItem
               orderNum={item.orderNum}
@@ -50,7 +49,12 @@ export default function OrderListingScreen({ navigation, route }) {
               type={item.type}
               tableNum={item.tableNum}
               name={item.name}
-              onPress={() => navigation.navigate("Order", item)}
+              pickupTime={item.pickupTime}
+              onPress={() =>
+                navigation.navigate("Order", {
+                  orderNum: item.orderNum,
+                })
+              }
               renderRightAction={() => (
                 <ListItemDeleteAction onPress={() => handleDelete(item)} />
               )}

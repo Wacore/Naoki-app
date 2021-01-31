@@ -27,6 +27,8 @@ export default function MenuDetailScreen({ navigation, route }) {
           amount: amount,
         };
 
+    res.isSent = false;
+
     navigation.navigate("Add", res);
 
     setAmount(1);
