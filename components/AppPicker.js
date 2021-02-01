@@ -10,9 +10,9 @@ import Screen from "./Screen";
 export default function AppPicker({
   icon,
   ItemList,
-  SelectedItem,
-  onPickerSelect,
+  selectedNum,
   title,
+  pickerType,
 }) {
   const [ModalVisible, setmodalVisible] = useState(false);
 
@@ -30,7 +30,7 @@ export default function AppPicker({
           )}
           <Text style={styles.pickerText}>{title}</Text>
           <View style={styles.numBox}>
-            <Text>{ItemList[SelectedItem]}</Text>
+            <Text>{ItemList[selectedNum]}</Text>
           </View>
           <MaterialCommunityIcons
             name="chevron-right"
@@ -45,8 +45,8 @@ export default function AppPicker({
           <View style={styles.wheelPickerContainer}>
             <AppWheelPicker
               ItemList={ItemList}
-              SelectedItem={SelectedItem}
-              onPickerSelect={onPickerSelect}
+              pickerType={pickerType}
+              selectedNum={selectedNum}
             />
             <View style={styles.buttonBox}>
               <Button title="Done" onPress={() => setmodalVisible(false)} />

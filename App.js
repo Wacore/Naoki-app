@@ -1,6 +1,5 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
 
 import TabNavigator from "./routes/TabNavigator";
 import LoginScreen from "./screens/LoginScreen";
@@ -10,63 +9,18 @@ import AppInputFeild from "./components/AppInputFeild";
 import AppCounter from "./components/AppCounter";
 import OrderItem from "./screens/OrderItem";
 import OrderDetailsScreen from "./screens/OrderDetailsScreen";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import orderListReducer from "./src/redux/orderListReducer";
 
-const item = {
-  orderNum: 1,
-  orders: [
-    {
-      Price: 4,
-      addition: "None",
-      amount: 1,
-      desc: null,
-      id: "a1",
-      name: "Edamame",
-      type: "appetizers",
-    },
-    {
-      Price: 6,
-      addition: "None",
-      amount: 1,
-      desc: "Panfried pork dumpling. Served with sesame soy vinegar sauce",
-      id: "a4",
-      name: "Gyoza",
-      type: "appetizers",
-    },
-    {
-      id: "e7",
-      name: "Sesame Chicken",
-      desc: "Tempura fried breast meat with sweet sesame teriyaki sauce",
-      Price: 17,
-      type: "Entree",
-      amount: 1,
-      addition: "None",
-    },
-    {
-      id: "rd3",
-      name: "Ramen Dinner C",
-      desc: "1/2 size ramen, spicy tuna bowl, maui shrimp, & salad",
-      Price: 17,
-      type: "Ramen Dinner",
-      amount: 2,
-      addition: "None",
-    },
-    {
-      id: "se8",
-      name: "Veggie Dinner",
-      desc: "Veggie roll, Inari, & assorted vegetable tempura",
-      Price: 16,
-      type: "Sushi Entree",
-      amount: 1,
-      addition: "None",
-    },
-  ],
-  peopleNum: 2,
-  tableNum: 2,
-  type: true,
-};
+const store = createStore(orderListReducer);
 
 export default function App() {
-  return <TabNavigator />;
+  return (
+    <Provider store={store}>
+      <TabNavigator />
+    </Provider>
+  );
 }
 
 const styles = StyleSheet.create({

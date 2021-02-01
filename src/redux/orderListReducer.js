@@ -1,0 +1,207 @@
+import * as orderActionType from "./OrderListItem";
+const _ = require("lodash");
+
+const initialState = {
+  orderlist: [],
+  orderNum: 1,
+  type: true,
+  peopleNum: 1,
+  tableNum: 1,
+  name: null,
+  phoneNumber: null,
+  pickUpTime: null,
+  orderItems: [],
+  selectedItem: {
+    selectedItemAmount: 1,
+    selecteditemAddition: null,
+  },
+};
+
+const orderListReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case orderActionType.ADD_TO_ORDER:
+      return {
+        ...state,
+        orderItems: [
+          ...state.orderItems,
+          {
+            addition: action.payload.addition,
+            amount: action.payload.amount,
+            itemId: action.payload.itemId,
+            menuItemId: action.payload.menuItemId,
+            name: action.payload.name,
+            type: action.payload.type,
+            isSent: action.payload.isSent,
+          },
+        ],
+      };
+
+    case orderActionType.REMOVE_FROM_ORDER:
+      return {
+        ...state,
+        orderItems: state.orderItems.filter(
+          (item) => item.itemId !== action.payload
+        ),
+      };
+
+    case orderActionType.RESET_ORDER:
+      return {
+        ...state,
+        type: true,
+        peopleNum: 1,
+        tableNum: 1,
+        name: null,
+        phoneNumber: null,
+        pickUpTime: null,
+        orderItems: [],
+      };
+
+    case orderActionType.ADD_TO_LIST:
+      const { is_done, order_info, orderlist } = action.payload;
+      if (order_info.type == "Dine-in") {
+        return {
+          ...state,
+          orderlist: [
+            ...state.orderlist,
+            {
+              is_done: is_done,
+              order_info: {
+                orderNum: order_info.orderNum,
+                peoNum: order_info.peoNum,
+                tableNum: order_info.tableNum,
+                type: "Dine-in",
+              },
+              orderlist: orderlist,
+            },
+          ],
+        };
+      } else {
+        const { customer_info } = action.payload;
+        return {
+          ...state,
+          orderlist: [
+            ...state.orderlist,
+            {
+              customer_info: {
+                name: customer_info.name,
+                phoneNum: customer_info.phoneNum,
+              },
+              is_done: is_done,
+              order_info: {
+                orderNum: order_info.orderNum,
+                pickupTime: parseInt(order_info.pickupTime),
+                type: "To-go",
+              },
+              orderlist: orderlist,
+            },
+          ],
+        };
+      }
+
+    case orderActionType.UPDATE_SENT_ITEM:
+      let newArray = [...state.orderlist];
+
+      let orderIndex = _.findIndex(newArray, function (o) {
+        return o.order_info.orderNum == action.payload.orderNum;
+      });
+      let itemIndex = _.findIndex(newArray[orderIndex].orderlist, function (i) {
+        return i.itemId == action.payload.itemId;
+      });
+      newArray[orderIndex].orderlist[itemIndex].isSent = true;
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.SET_ORDER_NUM:
+      return {
+        ...state,
+        orderNum: state.orderNum + 1,
+      };
+
+    case orderActionType.SET_TYPE:
+      return {
+        ...state,
+        type: !state.type,
+      };
+
+    case orderActionType.SET_PEOPLE_NUM:
+      return {
+        ...state,
+        peopleNum: action.payload,
+      };
+
+    case orderActionType.SET_TABLE_NUM:
+      return {
+        ...state,
+        tableNum: action.payload,
+      };
+
+    case orderActionType.SET_NAME:
+      return {
+        ...state,
+        name: action.payload,
+      };
+
+    case orderActionType.SET_PHONE_NUM:
+      return {
+        ...state,
+        phoneNumber: action.payload,
+      };
+
+    case orderActionType.SET_PICKUP_TIME:
+      return {
+        ...state,
+        pickUpTime: action.payload,
+      };
+
+    case orderActionType.SET_SELECTED_AMOUNT_PLUS:
+      return {
+        ...state,
+        selectedItem: {
+          ...state.selectedItem,
+          selectedItemAmount: state.selectedItem.selectedItemAmount + 1,
+        },
+      };
+
+    case orderActionType.SET_SELECTED_AMOUNT_MINUS:
+      return {
+        ...state,
+        selectedItem: {
+          ...state.selectedItem,
+          selectedItemAmount: state.selectedItem.selectedItemAmount - 1,
+        },
+      };
+
+    case orderActionType.SET_SELECTED_ADDITION:
+      return {
+        ...state,
+        selectedItem: {
+          ...state.selectedItem,
+          selecteditemAddition: action.payload,
+        },
+      };
+
+    case orderActionType.RESET_SELECTED_AMOUNT:
+      return {
+        ...state,
+        selectedItem: {
+          ...state.selectedItem,
+          selectedItemAmount: 1,
+        },
+      };
+
+    case orderActionType.RESET_SELECTED_ADDITION:
+      return {
+        ...state,
+        selectedItem: {
+          ...state.selectedItem,
+          selecteditemAddition: null,
+        },
+      };
+    default:
+      return state;
+  }
+};
+
+export default orderListReducer;

@@ -1,28 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
 
 import colors from "../config/colors";
 import AppText from "../components/AppText";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function OrderItem({ addition, amount, name, onRemoveOrder }) {
+export default function OrderItem({
+  addition,
+  amount,
+  name,
+  onFinishItem,
+  isSent,
+  onRemoveOrder,
+  itemId,
+}) {
+  const [Sent, setSent] = useState(isSent);
+
+  useEffect(() => {
+    // console.log(itemId);
+  });
+
   return (
-    <View style={styles.detailCon}>
+    <View style={isSent ? styles.detailConSent : styles.detailCon}>
       <View style={styles.infoBox}>
         <View style={styles.conBox}>
           <Text style={{ paddingBottom: 5, fontSize: 18 }}>{name}</Text>
         </View>
         <Text style={styles.amountBox}>{amount}</Text>
-        <TouchableWithoutFeedback onPress={onRemoveOrder}>
-          <MaterialCommunityIcons
-            name="delete"
-            size={25}
-            color={colors.primary}
-            style={{ marginLeft: 20, marginRight: 7 }}
-          />
-        </TouchableWithoutFeedback>
+        {onRemoveOrder && (
+          <TouchableWithoutFeedback onPress={onRemoveOrder}>
+            <MaterialCommunityIcons
+              name="delete"
+              size={25}
+              color={colors.primary}
+              style={{ marginLeft: 20, marginRight: 7 }}
+            />
+          </TouchableWithoutFeedback>
+        )}
+        {onFinishItem && (
+          <TouchableWithoutFeedback onPress={onFinishItem}>
+            <MaterialCommunityIcons
+              name="send"
+              size={25}
+              color={colors.primary}
+              style={{ marginLeft: 20, marginRight: 7 }}
+            />
+          </TouchableWithoutFeedback>
+        )}
       </View>
-      {addition != "None" && (
+      {addition != null && (
         <View style={styles.textInput}>
           <AppText>PS: {addition}</AppText>
         </View>
@@ -47,6 +73,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 150,
     backgroundColor: colors.white,
+    padding: 10,
+    borderRadius: 5,
+    // backgroundColor: "pink",
+    borderColor: colors.sublight,
+    borderWidth: 0.3,
+    marginBottom: 10,
+  },
+  detailConSent: {
+    width: "100%",
+    height: 150,
+    backgroundColor: colors.gray,
     padding: 10,
     borderRadius: 5,
     // backgroundColor: "pink",
