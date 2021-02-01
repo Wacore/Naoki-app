@@ -11,7 +11,6 @@ export default function AppPicker({
   icon,
   ItemList,
   selectedNum,
-  onPickerSelect,
   title,
   pickerType,
 }) {
@@ -48,7 +47,6 @@ export default function AppPicker({
               ItemList={ItemList}
               pickerType={pickerType}
               selectedNum={selectedNum}
-              onPickerSelect={onPickerSelect}
             />
             <View style={styles.buttonBox}>
               <Button title="Done" onPress={() => setmodalVisible(false)} />

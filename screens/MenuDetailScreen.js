@@ -1,39 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 
 import AppButton from "../components/AppButton";
 import AppCounter from "../components/AppCounter";
-import AppTextInput from "../components/AppTextInput";
 import colors from "../config/colors";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import AppFormField from "../components/AppFormField";
+import {
+  setSelectedAmountPlus,
+  setSelectedAmountMinus,
+  setSelectedAddition,
+  resetSelectedAddition,
+  resetSelectedAmount,
+  addOrder,
+} from "../src/redux/orderListAction";
 
 export default function MenuDetailScreen({ navigation, route }) {
   const item = route.params;
 
-  const [amount, setAmount] = useState(1);
-  const [addition, setAddition] = useState("None");
+  const dispatch = useDispatch();
+
+  const { selectedItemAmount, selecteditemAddition } = useSelector(
+    (state) => state.selectedItem
+  );
 
   const handleSubmit = () => {
-    const res = addition
-      ? {
-          id: item.id,
-          amount: amount,
-          addition: addition,
-        }
-      : {
-          id: item.id,
-          amount: amount,
-        };
-
-    res.isSent = false;
-
-    navigation.navigate("Add", res);
-
-    setAmount(1);
-    setAddition("None");
+    let itemId = Math.floor(100000 + Math.random() * 900000);
+    let menuItem = {
+      itemId,
+      menuItemId: item.id,
+      name: item.name,
+      amount: selectedItemAmount,
+      addition: selecteditemAddition,
+      type: item.type,
+      isSent: false,
+    };
+    dispatch(addOrder(menuItem));
+    navigation.navigate("Add");
+    // console.log(menuItem);
+    dispatch(resetSelectedAmount());
+    dispatch(resetSelectedAddition());
   };
+
+  useEffect(() => {
+    console.log("mounted");
+    console.log(item);
+    return () => {
+      console.log("unmounted");
+    };
+  });
 
   return (
     <View style={styles.container}>
@@ -45,9 +59,9 @@ export default function MenuDetailScreen({ navigation, route }) {
           </View>
           <View>
             <AppCounter
-              counterNum={amount}
-              onPressMin={() => setAmount(amount - 1)}
-              onPressPlus={() => setAmount(amount + 1)}
+              counterNum={selectedItemAmount}
+              onPressMin={() => dispatch(setSelectedAmountMinus())}
+              onPressPlus={() => dispatch(setSelectedAmountPlus())}
             />
           </View>
         </View>
@@ -55,7 +69,7 @@ export default function MenuDetailScreen({ navigation, route }) {
           <TextInput
             style={{ height: "100%", width: "100%" }}
             placeholder="PS"
-            onChangeText={(text) => setAddition(text)}
+            onChangeText={(text) => dispatch(setSelectedAddition(text))}
           />
         </View>
       </View>

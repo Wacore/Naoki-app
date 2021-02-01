@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, FlatList } from "react-native";
+import { StyleSheet, View, FlatList, Text } from "react-native";
 
 import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
@@ -9,13 +9,9 @@ import { useSelector } from "react-redux";
 export default function OrderListingScreen({ navigation, route }) {
   const [orders, setOrders] = useState([]);
   const [refreshing, setreFreshing] = useState(false);
-  const [currentOrder, setCurrentOrder] = useState({});
 
   const orderlist = useSelector((state) => state.orderlist);
   const type = useSelector((state) => state.type);
-
-  console.log(orderlist);
-  console.log(type);
 
   const handleDelete = (item) => {
     const newOrders = orders.filter((o) => o.orderNum != item.orderNum);
@@ -27,32 +23,33 @@ export default function OrderListingScreen({ navigation, route }) {
   };
 
   React.useEffect(() => {
-    let param;
-    if (route.params && route.params != currentOrder) {
-      param = route.params;
-      setCurrentOrder(param);
-      handleAddOrder(route.params);
-    }
-  }, [route.params]);
+    console.log(orderlist);
+  });
 
   console.log(orders);
   return (
     <View style={styles.container}>
-      {orders && (
+      {orderlist && (
         <FlatList
           data={orderlist}
-          keyExtractor={(orderlist) => orderlist.orderNum.toString()}
+          keyExtractor={(orderlist) => orderlist.order_info.orderNum.toString()}
           renderItem={({ item }) => (
             <ListItem
-              orderNum={item.orderNum}
-              peopleNum={item.peopleNum}
-              type={item.type}
-              tableNum={item.tableNum}
-              name={item.name}
-              pickupTime={item.pickupTime}
+              orderNum={item.order_info.orderNum}
+              peopleNum={item.order_info.peoNum}
+              type={item.order_info.type}
+              tableNum={item.order_info.tableNum}
+              name={
+                item.order_info.type == "To-go" ? item.customer_info.name : null
+              }
+              pickupTime={
+                item.order_info.type == "To-go"
+                  ? item.order_info.pickupTime
+                  : null
+              }
               onPress={() =>
                 navigation.navigate("Order", {
-                  orderNum: item.orderNum,
+                  orderNum: item.order_info.orderNum,
                 })
               }
               renderRightAction={() => (

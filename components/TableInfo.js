@@ -14,12 +14,9 @@ export default function TableInfo({
     <View style={styles.infoBox}>
       <View style={styles.infoDetails}>
         <MaterialCommunityIcons name="food" size={25} color={colors.medium} />
-        <Text style={styles.title}>
-          {" "}
-          : {type == true ? "Dine-in" : "To-go"}
-        </Text>
+        <Text style={styles.title}> : {type}</Text>
       </View>
-      {type == true && (
+      {type == "Dine-in" && (
         <>
           <View style={styles.infoDetails}>
             <MaterialCommunityIcons
@@ -39,7 +36,7 @@ export default function TableInfo({
           </View>
         </>
       )}
-      {type != true && (
+      {type == "To-go" && (
         <>
           <View style={styles.infoDetails}>
             <MaterialCommunityIcons

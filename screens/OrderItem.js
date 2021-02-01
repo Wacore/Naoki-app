@@ -12,11 +12,12 @@ export default function OrderItem({
   onFinishItem,
   isSent,
   onRemoveOrder,
+  itemId,
 }) {
   const [Sent, setSent] = useState(isSent);
 
   useEffect(() => {
-    setSent(isSent);
+    // console.log(itemId);
   });
 
   return (
@@ -47,7 +48,7 @@ export default function OrderItem({
           </TouchableWithoutFeedback>
         )}
       </View>
-      {addition != "None" && (
+      {addition != null && (
         <View style={styles.textInput}>
           <AppText>PS: {addition}</AppText>
         </View>

@@ -13,10 +13,14 @@ import AppTextInput from "../components/AppTextInput";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  setOrderNum,
   setName,
   setType,
   setPhoneNum,
   setPickUpTime,
+  removeOrder,
+  addList,
+  resetOrder,
 } from "../src/redux/orderListAction";
 
 export default function NewOrderScreen({ route, navigation }) {
@@ -24,29 +28,17 @@ export default function NewOrderScreen({ route, navigation }) {
     type,
     peopleNum,
     tableNum,
+    orderNum,
     name,
     phoneNumber,
     pickUpTime,
+    orderItems,
+    orderlist,
   } = useSelector((state) => state);
 
   const initialList = numbers;
 
-  const [orderList, setOrderList] = useState([]);
-  const [orderNumber, setOrderNumber] = useState(1);
-  const [CurrentOrder, setCurrentOrder] = useState({
-    addition: "None",
-    amount: "None",
-    id: "None",
-  });
   const dispatch = useDispatch();
-
-  const handlePickerSelect = (index) => {
-    setSelectedItem(index);
-  };
-
-  const handleTableSelect = (index) => {
-    setSelectedTable(index);
-  };
 
   const handleAddOrderList = (res) => {
     let data = menu.filter((a) => a.id == res.id);
@@ -56,53 +48,36 @@ export default function NewOrderScreen({ route, navigation }) {
     setOrderList([...orderList, data[0]]);
   };
 
-  const handleRemoveOrderList = (res) => {
-    console.log(res);
-    setOrderList(orderList.filter((o) => o.id != res.id));
-  };
-
   const handleSubmit = () => {
-    //   if (orderList.length != 0) {
-    //     let order = {
-    //       orderNum: orderNumber,
-    //       orders: orderList,
-    //     };
-    //     if (IsDineIn) {
-    //       order.peopleNum = SelectedItem;
-    //       order.type = IsDineIn;
-    //       order.tableNum = SelectedTable;
-    //     } else {
-    //       order.type = IsDineIn;
-    //       order.name = name;
-    //       order.phoneNumber = phoneNumber;
-    //       order.pickupTime = pickupTime;
-    //     }
-    //     navigation.navigate("Orders", order);
-    //     setOrderList([]);
-    //     setOrderNumber(orderNumber + 1);
-    //     setIsDineIn(true);
-    //     setSelectedItem(0);
-    //     setSelectedTable(0);
-    //   }
-    // };
-
-    // const clearParams = () => {
-    //   navigation.setParams({});
-
-    alert(`${name} + ${phoneNumber} + ${pickUpTime}`);
+    if (orderItems.length != 0) {
+      let order = {
+        is_done: false,
+        order_info: {
+          orderNum: orderNum,
+          type: type ? "Dine-in" : "To-go",
+        },
+        orderlist: orderItems,
+      };
+      if (type) {
+        order.order_info.peoNum = peopleNum;
+        order.order_info.tableNum = tableNum;
+      } else {
+        order.order_info.pickupTime = pickUpTime;
+        order.customer_info = {
+          name: name,
+          phoneNum: phoneNumber,
+        };
+      }
+      dispatch(addList(order));
+      dispatch(setOrderNum());
+      dispatch(resetOrder());
+      navigation.navigate("Orders", order);
+    }
   };
 
   React.useEffect(() => {
-    let param;
-    console.log(name);
-    if (route.params && route.params != CurrentOrder) {
-      // To-solve find a solution to the passing params twice problem
-      param = route.params;
-      setCurrentOrder(param);
-      // console.log(param);
-      handleAddOrderList(route.params);
-    }
-  }, [route.params]);
+    // console.log(orderlist);
+  });
 
   return (
     <Screen appStyle={styles.container}>
@@ -114,7 +89,6 @@ export default function NewOrderScreen({ route, navigation }) {
             pickerType="people"
             ItemList={initialList}
             selectedNum={peopleNum}
-            onPickerSelect={handlePickerSelect}
             title="Number of Customer:"
           />
           <AppPicker
@@ -122,7 +96,6 @@ export default function NewOrderScreen({ route, navigation }) {
             pickerType="table"
             ItemList={initialList}
             selectedNum={tableNum}
-            onPickerSelect={handleTableSelect}
             title="Table Number"
           />
         </>
@@ -141,7 +114,7 @@ export default function NewOrderScreen({ route, navigation }) {
             onChangeText={(text) => dispatch(setPhoneNum(text))}
           />
           <AppTextInput
-            placeholder="Phone Number"
+            placeholder="Time"
             icon="timer"
             keyboardType="phone-pad"
             onChangeText={(text) => dispatch(setPickUpTime(text))}
@@ -159,16 +132,16 @@ export default function NewOrderScreen({ route, navigation }) {
         appStyle={{ backgroundColor: colors.primary }}
         onPress={handleSubmit}
       />
-      {orderList && (
+      {orderItems && (
         <FlatList
-          data={orderList}
-          keyExtractor={(item, index) => index.toString()}
+          data={orderItems}
+          keyExtractor={(item) => item.itemId.toString()}
           renderItem={({ item }) => (
             <OrderItem
               name={item.name}
               amount={item.amount}
               addition={item.addition}
-              onRemoveOrder={() => handleRemoveOrderList(item)}
+              onRemoveOrder={() => dispatch(removeOrder(item.itemId))}
             />
           )}
         />
