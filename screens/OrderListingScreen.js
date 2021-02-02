@@ -1,32 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, FlatList, Text } from "react-native";
 
 import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { removeOrderFromList } from "../src/redux/orderListAction";
 
 export default function OrderListingScreen({ navigation, route }) {
   const [orders, setOrders] = useState([]);
   const [refreshing, setreFreshing] = useState(false);
 
   const orderlist = useSelector((state) => state.orderlist);
-  const type = useSelector((state) => state.type);
+  const dispatch = useDispatch();
 
-  const handleDelete = (item) => {
-    const newOrders = orders.filter((o) => o.orderNum != item.orderNum);
-    setOrders(newOrders);
-  };
-
-  const handleAddOrder = (item) => {
-    setOrders([...orders, item]);
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     console.log(orderlist);
+    return () => {
+      console.log(orderlist);
+    };
   });
 
-  console.log(orders);
   return (
     <View style={styles.container}>
       {orderlist && (
@@ -53,7 +47,9 @@ export default function OrderListingScreen({ navigation, route }) {
                 })
               }
               renderRightAction={() => (
-                <ListItemDeleteAction onPress={() => handleDelete(item)} />
+                <ListItemDeleteAction
+                  onPress={() => dispatch(removeOrderFromList(item.orderId))}
+                />
               )}
             />
           )}

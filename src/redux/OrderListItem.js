@@ -1,6 +1,7 @@
 // For adding or removing an item from the order
 export const ADD_TO_ORDER = "orderAdded";
 export const REMOVE_FROM_ORDER = "orderRemoved";
+export const SET_FINISH_ORDER = "orderFinished";
 
 // For adding or removing an item from the list
 export const ADD_TO_LIST = "orderListAdded";
@@ -14,6 +15,8 @@ export const SET_TABLE_NUM = "orderTableNumSet";
 export const SET_NAME = "orderNameSet";
 export const SET_PHONE_NUM = "orderPhoneNumSet";
 export const SET_PICKUP_TIME = "orderPickUpTimeSet";
+export const SET_EDIT = "editSet";
+export const SET_CURRENT_ORDER_NUM = "currentOrderNumSet";
 
 export const SET_SELECTED_ID = "selectedIDSet";
 export const SET_SELECTED_AMOUNT_PLUS = "selectedIDAmountPlus";
@@ -21,6 +24,10 @@ export const SET_SELECTED_AMOUNT_MINUS = "selectedIDAmountMinus";
 export const SET_SELECTED_ADDITION = "selectedIDAddition";
 
 export const UPDATE_SENT_ITEM = "itemSentUpdate";
+export const UPDATE_ADDITION = "itemAdditionUpdate";
+export const UPDATE_AMOUNT_PLUS = "itemAmountPlusUpdate";
+export const UPDATE_AMOUNT_MINUS = "itemAmountMinusUpdate";
+export const UPDATE_ORDER_LIST = "orderListUpdate";
 
 export const RESET_SELECTED_AMOUNT = "selectedIDAmountReset";
 export const RESET_SELECTED_ADDITION = "selectedIDAdditionReset";

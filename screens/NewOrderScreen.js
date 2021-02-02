@@ -23,7 +23,7 @@ import {
   resetOrder,
 } from "../src/redux/orderListAction";
 
-export default function NewOrderScreen({ route, navigation }) {
+export default function NewOrderScreen({ navigation }) {
   const {
     type,
     peopleNum,
@@ -51,6 +51,7 @@ export default function NewOrderScreen({ route, navigation }) {
   const handleSubmit = () => {
     if (orderItems.length != 0) {
       let order = {
+        orderId: Math.floor(100000 + Math.random() * 900000),
         is_done: false,
         order_info: {
           orderNum: orderNum,
@@ -68,9 +69,11 @@ export default function NewOrderScreen({ route, navigation }) {
           phoneNum: phoneNumber,
         };
       }
+
       dispatch(addList(order));
       dispatch(setOrderNum());
       dispatch(resetOrder());
+      console.log(order);
       navigation.navigate("Orders", order);
     }
   };
