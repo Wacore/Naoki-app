@@ -16,6 +16,7 @@ import {
   updateItemAmountPlus,
   updateItemAmountMinus,
   updateItemAddition,
+  updateRemoveItem,
 } from "../src/redux/orderListAction";
 
 export default function OrderItem({
@@ -29,7 +30,6 @@ export default function OrderItem({
   orderNum,
 }) {
   const isEdit = useSelector((state) => state.isEdit);
-  useEffect(() => {});
 
   const dispatch = useDispatch();
 
@@ -72,7 +72,11 @@ export default function OrderItem({
           </TouchableWithoutFeedback>
         )}
         {onFinishItem && isEdit && (
-          <TouchableWithoutFeedback onPress={onRemoveOrder}>
+          <TouchableWithoutFeedback
+            onPress={() =>
+              dispatch(updateRemoveItem({ orderNum: orderNum, itemId: itemId }))
+            }
+          >
             <MaterialCommunityIcons
               name="delete"
               size={25}

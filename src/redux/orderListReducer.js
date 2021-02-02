@@ -198,6 +198,18 @@ const orderListReducer = (state = initialState, action) => {
         orderlist: newArray,
       };
 
+    case orderActionType.UPDATE_ITEM_REMOVE:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+      // _(newArray[orderIndex].orderlist).slice(itemIndex, 1).value();
+      newArray[orderIndex].orderlist.splice(itemIndex, 1);
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
     case orderActionType.SET_ORDER_NUM:
       return {
         ...state,

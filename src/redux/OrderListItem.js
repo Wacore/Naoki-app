@@ -28,6 +28,7 @@ export const UPDATE_ADDITION = "itemAdditionUpdate";
 export const UPDATE_AMOUNT_PLUS = "itemAmountPlusUpdate";
 export const UPDATE_AMOUNT_MINUS = "itemAmountMinusUpdate";
 export const UPDATE_ORDER_LIST = "orderListUpdate";
+export const UPDATE_ITEM_REMOVE = "removeOrderUpdate";
 
 export const RESET_SELECTED_AMOUNT = "selectedIDAmountReset";
 export const RESET_SELECTED_ADDITION = "selectedIDAdditionReset";

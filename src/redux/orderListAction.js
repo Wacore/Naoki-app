@@ -174,3 +174,10 @@ export const updateItemAddition = (item) => {
     payload: item,
   };
 };
+
+export const updateRemoveItem = (item) => {
+  return {
+    type: orderActionType.UPDATE_ITEM_REMOVE,
+    payload: item,
+  };
+};
