@@ -4,7 +4,7 @@ import colors from "../config/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import TableInfo from "./TableInfo";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
+// todo: groupt all att into a single object
 export default function ListItem({
   orderNum,
   peopleNum,
