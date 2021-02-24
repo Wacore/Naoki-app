@@ -16,11 +16,7 @@ import orderListReducer from "./src/redux/orderListReducer";
 const store = createStore(orderListReducer);
 
 export default function App() {
-  return (
-    <Provider store={store}>
-      <TabNavigator />
-    </Provider>
-  );
+  return <LoginScreen />;
 }
 
 const styles = StyleSheet.create({
@@ -31,3 +27,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+{
+  /* <Provider store={store}>
+      <TabNavigator />
+    </Provider> */
+}
