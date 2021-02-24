@@ -118,3 +118,19 @@ export const updateItemSent = (item) => {
     payload: item,
   };
 };
+
+// Menu items
+
+export const getMenuItems = (menuItems) => {
+  return {
+    type: orderActionType.GET_MENU_ITEMS,
+    payload: menuItems,
+  };
+};
+
+export const setMenuItemError = (item) => {
+  return {
+    type: orderActionType.SET_MENU_ITEMS_ERROR,
+    payload: item,
+  };
+};

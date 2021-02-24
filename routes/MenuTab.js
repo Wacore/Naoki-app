@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MenuListScreen from "../screens/MenuListScreen";
+import { useDispatch, useSelector } from "react-redux";
+const _ = require("lodash");
 
 import appetizersMenu from "../data/appetizersMenu.js";
 import dessertMenu from "../data/dessertMenu.js";
@@ -11,16 +11,34 @@ import ramenDinnerMenu from "../data/ramenDinnerMenu.js";
 import ramenMenu from "../data/ramenMenu.js";
 import sushiEntreeMenu from "../data/sushiEntreeMenu.js";
 import sushiRollMenu from "../data/sushiRollMenu.js";
+import menuApi from "../API/menu";
+import { getMenuItems, setMenuItemError } from "../src/redux/orderListAction";
 
-import MenuDetailScreen from "../screens/MenuDetailScreen";
+// let appetizersMenu;
+// let dessertMenu;
+// let entreeMenu;
+// let curryMenu;
+// let ramenDinnerMenu;
+// let ramenMenu;
+// let specialRamenMenu;
+// let coldlRamenMenu;
+// let sushiEntreeMenu;
+// let sushiRollMenu;
+// let specialSushiRollMenu;
 
-// const appetizersMenu = appetizersMenu;
-// const dessertMenu = dessertMenu;
-// const entreeMenu = entreeMenu;
-// const ramenDinnerMenu = ramenDinnerMenu;
-// const ramenMenu = ramenMenu;
-// const sushiEntreeMenu = sushiEntreeMenu;
-// const sushiRollMenu = sushiRollMenu;
+const dispatch = useDispatch();
+
+const loadMenu = async () => {
+  const response = await menuApi.getMenu();
+  if (!response.ok) return dispatch(setMenuItemError(true));
+
+  // dispatch(setMenuItemError(true));
+  // dispatch(getMenuItems(response.data));
+
+  const menuItems = useSelector((state) => state.menuItems);
+
+  // todo: using lodash to create different kinds of menu
+};
 
 function AppetizersScreen({ navigation }) {
   return (

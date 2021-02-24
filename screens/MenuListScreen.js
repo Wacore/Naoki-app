@@ -1,11 +1,20 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  Button,
+} from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import MenuItem from "../components/MenuItem";
 import ListItemSeparator from "../components/ListItemSeparator";
-import AppButton from "../components/AppButton";
+import { useSelector } from "react-redux";
+import AppText from "../components/AppText";
+import { loadMenu } from "../APIFuncs/menuApiFunc";
 
 export default function MenuListScreen({ menuData, navigation }) {
+  const menuItemError = useSelector((state) => state.menuItemError);
   return (
     <View
       style={{
@@ -15,6 +24,12 @@ export default function MenuListScreen({ menuData, navigation }) {
         padding: 5,
       }}
     >
+      {menuItemError && (
+        <>
+          <AppText>Couldn't retrieve the menu.</AppText>
+          <Button title="Retry" onPress={loadMenu} />
+        </>
+      )}
       <FlatList
         data={menuData}
         keyExtractor={(menuData) => menuData.id.toString()}
