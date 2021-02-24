@@ -12,6 +12,7 @@ import {
   resetSelectedAddition,
   resetSelectedAmount,
   addOrder,
+  updateOrderListAdd,
 } from "../src/redux/orderListAction";
 
 export default function MenuDetailScreen({ navigation, route }) {
@@ -22,6 +23,8 @@ export default function MenuDetailScreen({ navigation, route }) {
   const { selectedItemAmount, selecteditemAddition } = useSelector(
     (state) => state.selectedItem
   );
+
+  const isEdit = useSelector((state) => state.isEdit);
 
   const handleSubmit = () => {
     let itemId = Math.floor(100000 + Math.random() * 900000);
@@ -34,15 +37,19 @@ export default function MenuDetailScreen({ navigation, route }) {
       type: item.type,
       isSent: false,
     };
-    dispatch(addOrder(menuItem));
-    navigation.navigate("Add");
+    if (!isEdit) {
+      dispatch(addOrder(menuItem));
+      navigation.navigate("Add");
+    } else {
+      dispatch(updateOrderListAdd(menuItem));
+      navigation.goBack();
+    }
     // console.log(menuItem);
     dispatch(resetSelectedAmount());
     dispatch(resetSelectedAddition());
   };
 
   useEffect(() => {
-    console.log("mounted");
     console.log(item);
     return () => {
       console.log("unmounted");

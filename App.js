@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 
 import TabNavigator from "./routes/TabNavigator";
@@ -12,11 +12,23 @@ import OrderDetailsScreen from "./screens/OrderDetailsScreen";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import orderListReducer from "./src/redux/orderListReducer";
+import AuthContext from "./auth/context";
 
 const store = createStore(orderListReducer);
 
 export default function App() {
-  return <LoginScreen />;
+  const [user, setUser] = useState();
+  return (
+    <AuthContext.Provider value={{ user, setUser }}>
+      {user ? (
+        <Provider store={store}>
+          <TabNavigator />
+        </Provider>
+      ) : (
+        <LoginScreen />
+      )}
+    </AuthContext.Provider>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -27,9 +39,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-{
-  /* <Provider store={store}>
-      <TabNavigator />
-    </Provider> */
-}

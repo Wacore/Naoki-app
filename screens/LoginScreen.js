@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import AppFormField from "../components/AppFormField";
@@ -6,15 +6,32 @@ import Screen from "../components/Screen";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import SubmitButton from "../components/SubmitButton";
+import ErrorMessage from "../components/ErrorMessage";
 import colors from "../config/colors";
+import jwtDecode from "jwt-decode";
+
+import authApi from "../API/auth";
+import AuthContext from "../auth/context";
 
 export default function LoginScreen() {
+  const [loginFatal, setLoginFatal] = useState(false);
+  const authContext = useContext(AuthContext);
+
+  const handleSubmit = async ({ username, password }) => {
+    const result = await authApi.login(username, password);
+    if (!result.ok) return setLoginFatal(true);
+
+    setLoginFatal(false);
+    const user = jwtDecode(result.data);
+    authContext.setUser(user);
+  };
+
   return (
     <Screen appStyle={styles.screen}>
       {
         <Formik
           initialValues={{ username: "", password: "" }}
-          onSubmit={() => console.log("login")}
+          onSubmit={handleSubmit}
           validationSchema={Yup.object().shape({
             username: Yup.string().required().min(3).label("Username"),
             password: Yup.string().required().min(8).label("Password"),
@@ -22,6 +39,10 @@ export default function LoginScreen() {
         >
           {() => (
             <View style={styles.container}>
+              <ErrorMessage
+                error="Invalid email and/or password."
+                visible={loginFatal}
+              />
               <AppFormField
                 name="username"
                 placeholder="Usrename"

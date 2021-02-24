@@ -10,11 +10,29 @@ const initialState = {
   name: null,
   phoneNumber: null,
   pickUpTime: null,
+  isEdit: false,
+  currentOrderNum: null,
   orderItems: [],
   selectedItem: {
     selectedItemAmount: 1,
-    selecteditemAddition: null,
+    selecteditemAddition: "",
   },
+  menuItems: null,
+  menuItemError: false,
+};
+
+let newArray, orderIndex, itemIndex;
+
+const getOrderIndex = (newArray, orderNum) => {
+  return _.findIndex(newArray, function (o) {
+    return o.order_info.orderNum == orderNum;
+  });
+};
+
+const getItemIndex = (newArray, orderIndex, itemId) => {
+  return _.findIndex(newArray[orderIndex].orderlist, function (i) {
+    return i.itemId == itemId;
+  });
 };
 
 const orderListReducer = (state = initialState, action) => {
@@ -44,6 +62,17 @@ const orderListReducer = (state = initialState, action) => {
         ),
       };
 
+    case orderActionType.SET_FINISH_ORDER:
+      console.log(action.payload);
+      newArray = state.orderlist;
+      // newArray.map((o) =>
+      //   o.orderId == action.payload ? { ...o, is_done: true } : o
+      // );
+      let index = _.findIndex(newArray, { orderId: action.payload });
+      newArray[index].is_done = true;
+      alert("Done");
+      return { ...state, orderlist: newArray };
+
     case orderActionType.RESET_ORDER:
       return {
         ...state,
@@ -64,6 +93,7 @@ const orderListReducer = (state = initialState, action) => {
           orderlist: [
             ...state.orderlist,
             {
+              orderId: action.payload.orderId,
               is_done: is_done,
               order_info: {
                 orderNum: order_info.orderNum,
@@ -98,16 +128,85 @@ const orderListReducer = (state = initialState, action) => {
         };
       }
 
-    case orderActionType.UPDATE_SENT_ITEM:
-      let newArray = [...state.orderlist];
+    case orderActionType.REMOVE_FROM_LIST:
+      return {
+        ...state,
+        orderlist: state.orderlist.filter(
+          (order) => order.orderId !== action.payload
+        ),
+      };
 
-      let orderIndex = _.findIndex(newArray, function (o) {
+    case orderActionType.UPDATE_SENT_ITEM:
+      newArray = [...state.orderlist];
+
+      orderIndex = _.findIndex(newArray, function (o) {
         return o.order_info.orderNum == action.payload.orderNum;
       });
-      let itemIndex = _.findIndex(newArray[orderIndex].orderlist, function (i) {
+      itemIndex = _.findIndex(newArray[orderIndex].orderlist, function (i) {
         return i.itemId == action.payload.itemId;
       });
       newArray[orderIndex].orderlist[itemIndex].isSent = true;
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.UPDATE_AMOUNT_PLUS:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+
+      newArray[orderIndex].orderlist[itemIndex].amount += 1;
+
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.UPDATE_AMOUNT_MINUS:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+
+      newArray[orderIndex].orderlist[itemIndex].amount -= 1;
+
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.UPDATE_ORDER_LIST:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, state.currentOrderNum);
+      newArray[orderIndex].orderlist.push(action.payload);
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.UPDATE_ADDITION:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+
+      newArray[orderIndex].orderlist[itemIndex].addition =
+        action.payload.addition;
+      return {
+        ...state,
+        orderlist: newArray,
+      };
+
+    case orderActionType.UPDATE_ITEM_REMOVE:
+      newArray = [...state.orderlist];
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+      // _(newArray[orderIndex].orderlist).slice(itemIndex, 1).value();
+      newArray[orderIndex].orderlist.splice(itemIndex, 1);
       return {
         ...state,
         orderlist: newArray,
@@ -155,6 +254,18 @@ const orderListReducer = (state = initialState, action) => {
         pickUpTime: action.payload,
       };
 
+    case orderActionType.SET_EDIT:
+      return {
+        ...state,
+        isEdit: action.payload,
+      };
+
+    case orderActionType.SET_CURRENT_ORDER_NUM:
+      return {
+        ...state,
+        currentOrderNum: action.payload,
+      };
+
     case orderActionType.SET_SELECTED_AMOUNT_PLUS:
       return {
         ...state,
@@ -196,9 +307,18 @@ const orderListReducer = (state = initialState, action) => {
         ...state,
         selectedItem: {
           ...state.selectedItem,
-          selecteditemAddition: null,
+          selecteditemAddition: "",
         },
       };
+
+    // Menu items
+
+    case orderActionType.GET_MENU_ITEMS:
+      return {
+        ...state,
+        menuItems: action.payload,
+      };
+
     default:
       return state;
   }

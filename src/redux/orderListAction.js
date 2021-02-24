@@ -47,6 +47,20 @@ export const setPickUpTime = (pickUpTime) => {
   };
 };
 
+export const setEdit = (item) => {
+  return {
+    type: orderActionType.SET_EDIT,
+    payload: item,
+  };
+};
+
+export const setCurrentOrder = (item) => {
+  return {
+    type: orderActionType.SET_CURRENT_ORDER_NUM,
+    payload: item,
+  };
+};
+
 export const addOrder = (item) => {
   return {
     type: orderActionType.ADD_TO_ORDER,
@@ -57,6 +71,20 @@ export const addOrder = (item) => {
 export const addList = (item) => {
   return {
     type: orderActionType.ADD_TO_LIST,
+    payload: item,
+  };
+};
+
+export const removeOrderFromList = (item) => {
+  return {
+    type: orderActionType.REMOVE_FROM_LIST,
+    payload: item,
+  };
+};
+
+export const finishOrder = (item) => {
+  return {
+    type: orderActionType.SET_FINISH_ORDER,
     payload: item,
   };
 };
@@ -115,6 +143,41 @@ export const resetSelectedAddition = () => {
 export const updateItemSent = (item) => {
   return {
     type: orderActionType.UPDATE_SENT_ITEM,
+    payload: item,
+  };
+};
+
+export const updateItemAmountPlus = (item) => {
+  return {
+    type: orderActionType.UPDATE_AMOUNT_PLUS,
+    payload: item,
+  };
+};
+
+export const updateItemAmountMinus = (item) => {
+  return {
+    type: orderActionType.UPDATE_AMOUNT_MINUS,
+    payload: item,
+  };
+};
+
+export const updateOrderListAdd = (item) => {
+  return {
+    type: orderActionType.UPDATE_ORDER_LIST,
+    payload: item,
+  };
+};
+
+export const updateItemAddition = (item) => {
+  return {
+    type: orderActionType.UPDATE_ADDITION,
+    payload: item,
+  };
+};
+
+export const updateRemoveItem = (item) => {
+  return {
+    type: orderActionType.UPDATE_ITEM_REMOVE,
     payload: item,
   };
 };

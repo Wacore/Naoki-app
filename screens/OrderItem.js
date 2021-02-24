@@ -1,9 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  TextInput,
+} from "react-native";
 
 import colors from "../config/colors";
 import AppText from "../components/AppText";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import AppCounter from "../components/AppCounter";
+import {
+  updateItemAmountPlus,
+  updateItemAmountMinus,
+  updateItemAddition,
+  updateRemoveItem,
+} from "../src/redux/orderListAction";
 
 export default function OrderItem({
   addition,
@@ -13,12 +27,13 @@ export default function OrderItem({
   isSent,
   onRemoveOrder,
   itemId,
+  orderNum,
 }) {
-  const [Sent, setSent] = useState(isSent);
+  const isEdit = useSelector((state) => state.isEdit);
 
-  useEffect(() => {
-    // console.log(itemId);
-  });
+  const dispatch = useDispatch();
+
+  let item = { orderNum: orderNum, itemId: itemId };
 
   return (
     <View style={isSent ? styles.detailConSent : styles.detailCon}>
@@ -26,7 +41,16 @@ export default function OrderItem({
         <View style={styles.conBox}>
           <Text style={{ paddingBottom: 5, fontSize: 18 }}>{name}</Text>
         </View>
-        <Text style={styles.amountBox}>{amount}</Text>
+        {onFinishItem && isEdit ? (
+          <AppCounter
+            counterNum={amount}
+            onPressMin={() => dispatch(updateItemAmountMinus(item))}
+            onPressPlus={() => dispatch(updateItemAmountPlus(item))}
+          />
+        ) : (
+          <Text style={styles.amountBox}>{amount}</Text>
+        )}
+
         {onRemoveOrder && (
           <TouchableWithoutFeedback onPress={onRemoveOrder}>
             <MaterialCommunityIcons
@@ -37,7 +61,7 @@ export default function OrderItem({
             />
           </TouchableWithoutFeedback>
         )}
-        {onFinishItem && (
+        {onFinishItem && !isEdit && (
           <TouchableWithoutFeedback onPress={onFinishItem}>
             <MaterialCommunityIcons
               name="send"
@@ -47,11 +71,45 @@ export default function OrderItem({
             />
           </TouchableWithoutFeedback>
         )}
+        {onFinishItem && isEdit && (
+          <TouchableWithoutFeedback
+            onPress={() =>
+              dispatch(updateRemoveItem({ orderNum: orderNum, itemId: itemId }))
+            }
+          >
+            <MaterialCommunityIcons
+              name="delete"
+              size={25}
+              color={colors.primary}
+              style={{ marginLeft: 20, marginRight: 7 }}
+            />
+          </TouchableWithoutFeedback>
+        )}
       </View>
-      {addition != null && (
+
+      {isEdit ? (
         <View style={styles.textInput}>
-          <AppText>PS: {addition}</AppText>
+          <TextInput
+            style={{ height: "100%", width: "100%" }}
+            placeholder="PS"
+            onChangeText={(text) =>
+              dispatch(
+                updateItemAddition({
+                  addition: text,
+                  orderNum: orderNum,
+                  itemId: itemId,
+                })
+              )
+            }
+            value={addition}
+          />
         </View>
+      ) : (
+        addition != "" && (
+          <View style={styles.textInput}>
+            <AppText>PS: {addition}</AppText>
+          </View>
+        )
       )}
     </View>
   );

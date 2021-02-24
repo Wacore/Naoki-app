@@ -14,66 +14,30 @@ import _ from "lodash";
 
 import OrderItem from "./OrderItem";
 import sortingOrders from "../data/orderSorting";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateItemSent } from "../src/redux/orderListAction";
+import {
+  setEdit,
+  updateItemSent,
+  setCurrentOrder,
+  finishOrder,
+} from "../src/redux/orderListAction";
 
-export default function OrderDetailsScreen({ route }) {
+export default function OrderDetailsScreen({ route, navigation }) {
   const { orderNum } = route.params;
   const dispatch = useDispatch();
-  const stateOrderlist = useSelector((state) => state.orderlist);
 
   const orderItems = useSelector((state) => state.orderlist);
-  const { order_info, orderlist, customer_info } = orderItems.filter(
+  const isEdit = useSelector((state) => state.isEdit);
+  const { orderId, order_info, orderlist, customer_info } = orderItems.filter(
     (o) => o.order_info.orderNum == orderNum
   )[0];
 
-  // const [order, setOrder] = useState({});
-  const [toBeEdit, setToBeEdit] = useState(false);
-  // const [isStarted, setIsStarted] = useState(false);
-
-  const handleFinishItem = (itemId) => {
-    // if (isStarted) {
-    //   console.log("finished");
-    //   saveOrder();
-    //   let { orders } = order;
-    //   let index = (index = _.findIndex(orders, function (item) {
-    //     return item.id == itemId;
-    //   }));
-    //   let prevOrder = order;
-    //   prevOrder.orders[index].isSent = true;
-    //   setOrder(prevOrder);
-    // } else {
-    //   alert("Order has not started");
-    // }
-    console.log(itemId);
+  const handleEditOrder = () => {
+    dispatch(setEdit(true));
+    dispatch(setCurrentOrder(orderNum));
   };
 
-  const handleStartOrder = () => {
-    saveOrder();
-    setIsStarted(true);
-  };
-
-  const handleEditOrder = (key) => {
-    saveOrder();
-    setToBeEdit(true);
-  };
-
-  const handleCompleteEditOrder = (key) => {
-    saveOrder();
-    setToBeEdit(false);
-  };
-
-  const saveOrder = () => {
-    let prevOrder = {
-      orderNum: orderNum,
-      orders: orders,
-      peopleNum: peopleNum,
-      tableNum: tableNum,
-      type: type,
-    };
-    setOrder(prevOrder);
-  };
+  const handleCompleteEditOrder = (key) => {};
 
   let orderListSorted = sortingOrders(orderlist);
 
@@ -101,12 +65,17 @@ export default function OrderDetailsScreen({ route }) {
           </>
         )}
 
-        {toBeEdit ? (
-          <TouchableOpacity onPress={() => handleCompleteEditOrder(orderNum)}>
-            <AppText appStyle={{ color: colors.primary }}>Done</AppText>
-          </TouchableOpacity>
+        {isEdit ? (
+          <>
+            <TouchableOpacity onPress={() => navigation.navigate("Menu")}>
+              <AppText appStyle={{ color: colors.primary }}>Add</AppText>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => dispatch(setEdit(false))}>
+              <AppText appStyle={{ color: colors.primary }}>Done</AppText>
+            </TouchableOpacity>
+          </>
         ) : (
-          <TouchableOpacity onPress={() => handleEditOrder(orderNum)}>
+          <TouchableOpacity onPress={() => handleEditOrder()}>
             <AppText appStyle={{ color: colors.primary }}>Edit</AppText>
           </TouchableOpacity>
         )}
@@ -121,6 +90,7 @@ export default function OrderDetailsScreen({ route }) {
             amount={item.amount}
             addition={item.addition}
             isSent={item.isSent}
+            orderNum={orderNum}
             onFinishItem={() =>
               dispatch(
                 updateItemSent({ itemId: item.itemId, orderNum: orderNum })
@@ -132,16 +102,14 @@ export default function OrderDetailsScreen({ route }) {
           <Text style={styles.headerTitle}>{title}</Text>
         )}
       />
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.startContainer}
-        onPress={() => handleStartOrder()}
+        onPress={() => dispatch(finishOrder(orderId))}
       >
-        <MaterialCommunityIcons
-          name="play-circle"
-          size={75}
-          color={colors.primary}
-        />
-      </TouchableOpacity> */}
+        <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
+          Done
+        </Text>
+      </TouchableOpacity>
     </Screen>
   );
 }
@@ -174,12 +142,14 @@ const styles = StyleSheet.create({
   },
   startContainer: {
     position: "absolute",
-    right: 0,
-    bottom: 0,
+    right: 20,
+    bottom: 20,
     width: 80,
     height: 80,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 40,
+    backgroundColor: colors.primary,
   },
   startIcon: {},
 });
