@@ -8,13 +8,19 @@ import * as Yup from "yup";
 import SubmitButton from "../components/SubmitButton";
 import colors from "../config/colors";
 
+import authApi from "../API/auth";
+
 export default function LoginScreen() {
+  const handleSubmit = async ({ username, password }) => {
+    const result = await authApi.login(username, password);
+  };
+
   return (
     <Screen appStyle={styles.screen}>
       {
         <Formik
           initialValues={{ username: "", password: "" }}
-          onSubmit={() => console.log("login")}
+          onSubmit={handleSubmit}
           validationSchema={Yup.object().shape({
             username: Yup.string().required().min(3).label("Username"),
             password: Yup.string().required().min(8).label("Password"),

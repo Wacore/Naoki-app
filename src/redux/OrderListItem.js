@@ -25,3 +25,8 @@ export const UPDATE_SENT_ITEM = "itemSentUpdate";
 export const RESET_SELECTED_AMOUNT = "selectedIDAmountReset";
 export const RESET_SELECTED_ADDITION = "selectedIDAdditionReset";
 export const RESET_ORDER = "orderReset";
+
+// menu items
+
+export const GET_MENU_ITEMS = "getMenuItems";
+export const SET_MENU_ITEMS_ERROR = "set MenuItemsError";

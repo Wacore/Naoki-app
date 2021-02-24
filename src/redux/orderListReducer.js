@@ -15,6 +15,8 @@ const initialState = {
     selectedItemAmount: 1,
     selecteditemAddition: null,
   },
+  menuItems: null,
+  menuItemError: false,
 };
 
 const orderListReducer = (state = initialState, action) => {
@@ -199,6 +201,15 @@ const orderListReducer = (state = initialState, action) => {
           selecteditemAddition: null,
         },
       };
+
+    // Menu items
+
+    case orderActionType.GET_MENU_ITEMS:
+      return {
+        ...state,
+        menuItems: action.payload,
+      };
+
     default:
       return state;
   }
