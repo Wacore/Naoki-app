@@ -23,6 +23,8 @@ import {
   resetOrder,
 } from "../src/redux/orderListAction";
 
+import useAuth from "../auth/useAuth";
+
 export default function NewOrderScreen({ navigation }) {
   const {
     type,
@@ -35,6 +37,8 @@ export default function NewOrderScreen({ navigation }) {
     orderItems,
     orderlist,
   } = useSelector((state) => state);
+
+  const { logOut } = useAuth();
 
   const initialList = numbers;
 
@@ -134,6 +138,11 @@ export default function NewOrderScreen({ navigation }) {
         title="DONE"
         appStyle={{ backgroundColor: colors.primary }}
         onPress={handleSubmit}
+      />
+      <AppButton
+        title="Log out"
+        appStyle={{ backgroundColor: colors.primary }}
+        onPress={logOut}
       />
       {orderItems && (
         <FlatList
