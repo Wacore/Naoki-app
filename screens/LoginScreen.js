@@ -8,22 +8,19 @@ import * as Yup from "yup";
 import SubmitButton from "../components/SubmitButton";
 import ErrorMessage from "../components/ErrorMessage";
 import colors from "../config/colors";
-import jwtDecode from "jwt-decode";
 
 import authApi from "../API/auth";
-import AuthContext from "../auth/context";
+import useAuth from "../auth/useAuth";
 
 export default function LoginScreen() {
   const [loginFatal, setLoginFatal] = useState(false);
-  const authContext = useContext(AuthContext);
+  const { logIn } = useAuth();
 
   const handleSubmit = async ({ username, password }) => {
     const result = await authApi.login(username, password);
     if (!result.ok) return setLoginFatal(true);
-
     setLoginFatal(false);
-    const user = jwtDecode(result.data);
-    authContext.setUser(user);
+    logIn(result.data);
   };
 
   return (
