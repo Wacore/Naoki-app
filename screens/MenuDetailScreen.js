@@ -30,7 +30,7 @@ export default function MenuDetailScreen({ navigation, route }) {
     let itemId = Math.floor(100000 + Math.random() * 900000);
     let menuItem = {
       itemId,
-      menuItemId: item.id,
+      menuItemId: item._id,
       name: item.name,
       amount: selectedItemAmount,
       addition: selecteditemAddition,

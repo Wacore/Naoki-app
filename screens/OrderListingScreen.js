@@ -14,12 +14,12 @@ export default function OrderListingScreen({ navigation, route }) {
   const orderlist = useSelector((state) => state.orderlist);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(orderlist);
-    return () => {
-      console.log(orderlist);
-    };
-  });
+  // useEffect(() => {
+  //   console.log(orderlist);
+  //   return () => {
+  //     console.log(orderlist);
+  //   };
+  // });
 
   return (
     <View style={styles.container}>
