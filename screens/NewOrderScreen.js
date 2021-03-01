@@ -83,7 +83,7 @@ export default function NewOrderScreen({ navigation }) {
   };
 
   React.useEffect(() => {
-    // console.log(orderlist);
+    console.log(orderItems);
   });
 
   return (

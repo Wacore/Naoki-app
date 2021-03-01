@@ -1,7 +1,6 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MenuListScreen from "../screens/MenuListScreen";
-const _ = require("lodash");
 
 import appetizersMenu from "../data/appetizersMenu.js";
 import dessertMenu from "../data/dessertMenu.js";
@@ -11,38 +10,13 @@ import ramenMenu from "../data/ramenMenu.js";
 import sushiEntreeMenu from "../data/sushiEntreeMenu.js";
 import sushiRollMenu from "../data/sushiRollMenu.js";
 import menuApi from "../API/menu";
-// import { getMenuItems, setMenuItemError } from "../src/redux/orderListAction";
-
-// let appetizersMenu;
-// let dessertMenu;
-// let entreeMenu;
-// let curryMenu;
-// let ramenDinnerMenu;
-// let ramenMenu;
-// let specialRamenMenu;
-// let coldlRamenMenu;
-// let sushiEntreeMenu;
-// let sushiRollMenu;
-// let specialSushiRollMenu;
-
-// const dispatch = useDispatch();
-
-// const loadMenu = async () => {
-//   const response = await menuApi.getMenu();
-//   if (!response.ok) return dispatch(setMenuItemError(true));
-
-//   // dispatch(setMenuItemError(true));
-//   // dispatch(getMenuItems(response.data));
-
-//   const menuItems = useSelector((state) => state.menuItems);
-
-//   // todo: using lodash to create different kinds of menu
-// };
+import useApi from "../hooks/useApi";
+import MenuContext from "../menu/context";
 
 function AppetizersScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Appetizers"
+      title="appetizer"
       menuData={appetizersMenu}
       navigation={navigation}
     />
@@ -52,7 +26,7 @@ function AppetizersScreen({ navigation }) {
 function DessertScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Dessert"
+      title="dessert"
       menuData={dessertMenu}
       navigation={navigation}
     />
@@ -62,7 +36,7 @@ function DessertScreen({ navigation }) {
 function EntreeScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Entree"
+      title="entree"
       menuData={entreeMenu}
       navigation={navigation}
     />
@@ -72,7 +46,7 @@ function EntreeScreen({ navigation }) {
 function RamenScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Ramen"
+      title="ramen"
       menuData={ramenMenu}
       navigation={navigation}
     />
@@ -82,7 +56,7 @@ function RamenScreen({ navigation }) {
 function RamenDinnerScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Ramen Dinner"
+      title="ramen dinner"
       menuData={ramenDinnerMenu}
       navigation={navigation}
     />
@@ -92,7 +66,7 @@ function RamenDinnerScreen({ navigation }) {
 function SushiEntreeScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Sushi Entree"
+      title="sushi entree"
       menuData={sushiEntreeMenu}
       navigation={navigation}
     />
@@ -102,7 +76,7 @@ function SushiEntreeScreen({ navigation }) {
 function SushiRollScreen({ navigation }) {
   return (
     <MenuListScreen
-      title="Sushi Roll"
+      title="classic sushi roll"
       menuData={sushiRollMenu}
       navigation={navigation}
     />
@@ -112,15 +86,22 @@ function SushiRollScreen({ navigation }) {
 const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
+  const { request, data, error } = useApi(menuApi.getMenu);
+  useEffect(() => {
+    request();
+  }, []);
+
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Appetizers" component={AppetizersScreen} />
-      <Tab.Screen name="Sushi Roll" component={SushiRollScreen} />
-      <Tab.Screen name="Sushi Entree" component={SushiEntreeScreen} />
-      <Tab.Screen name="Entree" component={EntreeScreen} />
-      <Tab.Screen name="Ramen" component={RamenScreen} />
-      <Tab.Screen name="Ramen Dinner" component={RamenDinnerScreen} />
-      <Tab.Screen name="Dessert" component={DessertScreen} />
-    </Tab.Navigator>
+    <MenuContext.Provider value={{ data, error, request }}>
+      <Tab.Navigator>
+        <Tab.Screen name="Appetizers" component={AppetizersScreen} />
+        <Tab.Screen name="Sushi Roll" component={SushiRollScreen} />
+        <Tab.Screen name="Sushi Entree" component={SushiEntreeScreen} />
+        <Tab.Screen name="Entree" component={EntreeScreen} />
+        <Tab.Screen name="Ramen" component={RamenScreen} />
+        <Tab.Screen name="Ramen Dinner" component={RamenDinnerScreen} />
+        <Tab.Screen name="Dessert" component={DessertScreen} />
+      </Tab.Navigator>
+    </MenuContext.Provider>
   );
 }

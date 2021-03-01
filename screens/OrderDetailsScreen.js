@@ -37,12 +37,10 @@ export default function OrderDetailsScreen({ route, navigation }) {
     dispatch(setCurrentOrder(orderNum));
   };
 
-  const handleCompleteEditOrder = (key) => {};
-
   let orderListSorted = sortingOrders(orderlist);
 
   useEffect(() => {
-    // console.log(orderlist);
+    console.log(orderlist);
     // console.log(orderNum);
     // console.log(order.order_info);
     // orderList = sortingOrders(order);
