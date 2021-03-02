@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import MenuListScreen from "../screens/MenuListScreen";
 
+// to-do remove menus listed below.
 import appetizersMenu from "../data/appetizersMenu.js";
 import dessertMenu from "../data/dessertMenu.js";
 import entreeMenu from "../data/entreeMenu.js";
@@ -14,13 +15,7 @@ import useApi from "../hooks/useApi";
 import MenuContext from "../menu/context";
 
 function AppetizersScreen({ navigation }) {
-  return (
-    <MenuListScreen
-      title="appetizer"
-      menuData={appetizersMenu}
-      navigation={navigation}
-    />
-  );
+  return <MenuListScreen title="appetizer" navigation={navigation} />;
 }
 
 function DessertScreen({ navigation }) {
