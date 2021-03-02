@@ -6,20 +6,23 @@ import ListItemSeparator from "../components/ListItemSeparator";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
 import { useSelector, useDispatch } from "react-redux";
 import { removeOrderFromList } from "../src/redux/orderListAction";
+import useApi from "../hooks/useApi";
+import orderApi from "../API/order";
 
 export default function OrderListingScreen({ navigation, route }) {
-  const [orders, setOrders] = useState([]);
   const [refreshing, setreFreshing] = useState(false);
 
   const orderlist = useSelector((state) => state.orderlist);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   console.log(orderlist);
-  //   return () => {
-  //     console.log(orderlist);
-  //   };
-  // });
+  const getOrderAPI = useApi(orderApi.getOrder);
+
+  useEffect(() => {
+    getOrderAPI.request();
+  }, []);
+
+  console.log("orderlist from API");
+  console.log(getOrderAPI.data);
 
   return (
     <View style={styles.container}>

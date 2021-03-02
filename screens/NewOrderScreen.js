@@ -11,6 +11,7 @@ import menu from "../data/menu.js";
 import OrderItem from "./OrderItem";
 import AppTextInput from "../components/AppTextInput";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
 
 import {
   setOrderNum,
@@ -24,6 +25,7 @@ import {
 } from "../src/redux/orderListAction";
 
 import useAuth from "../auth/useAuth";
+import orderApi from "../API/order";
 
 export default function NewOrderScreen({ navigation }) {
   const {
@@ -43,6 +45,7 @@ export default function NewOrderScreen({ navigation }) {
   const initialList = numbers;
 
   const dispatch = useDispatch();
+  // const { request } = useApi(orderApi.addOrder);
 
   const handleAddOrderList = (res) => {
     let data = menu.filter((a) => a.id == res.id);
@@ -52,16 +55,25 @@ export default function NewOrderScreen({ navigation }) {
     setOrderList([...orderList, data[0]]);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (orderItems.length != 0) {
+      let orderArr = [...orderItems];
+      for (let index = 0; index < orderArr.length; index++) {
+        orderArr[index] = _.omit(orderArr[index], ["itemId", "name", "type"]);
+        orderArr[index].menu = orderArr[index].menuItemId;
+        orderArr[index].desc = orderArr[index].addition;
+
+        delete orderArr[index].menuItemId;
+        delete orderArr[index].addition;
+      }
+
       let order = {
-        orderId: Math.floor(100000 + Math.random() * 900000),
         is_done: false,
         order_info: {
           orderNum: orderNum,
           type: type ? "Dine-in" : "To-go",
         },
-        orderlist: orderItems,
+        orderlist: orderArr,
       };
       if (type) {
         order.order_info.peoNum = peopleNum;
@@ -74,16 +86,21 @@ export default function NewOrderScreen({ navigation }) {
         };
       }
 
-      dispatch(addList(order));
+      const result = await orderApi.addOrder(order);
+
+      if (!result.ok) return console.log(result);
+      alert("Success");
+      // dispatch(addList(order));
       dispatch(setOrderNum());
       dispatch(resetOrder());
-      console.log(order);
+      // console.log(order);
+
       navigation.navigate("Orders", order);
     }
   };
 
   React.useEffect(() => {
-    console.log(orderItems);
+    // console.log(orderlist);
   });
 
   return (
