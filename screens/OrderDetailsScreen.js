@@ -39,13 +39,6 @@ export default function OrderDetailsScreen({ route, navigation }) {
 
   let orderListSorted = sortingOrders(orderlist);
 
-  useEffect(() => {
-    console.log(orderlist);
-    // console.log(orderNum);
-    // console.log(order.order_info);
-    // orderList = sortingOrders(order);
-  });
-
   return (
     <Screen appStyle={{ backgroundColor: colors.light, padding: 0 }}>
       <View style={styles.header}>
@@ -80,13 +73,13 @@ export default function OrderDetailsScreen({ route, navigation }) {
       </View>
       <SectionList
         sections={orderListSorted}
-        keyExtractor={(item) => item.itemId.toString()}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
           <OrderItem
-            itemId={item.itemId}
-            name={item.name}
+            itemId={item._id}
+            name={item.menu.name}
             amount={item.amount}
-            addition={item.addition}
+            addition={item.desc}
             isSent={item.isSent}
             orderNum={orderNum}
             onFinishItem={() =>
