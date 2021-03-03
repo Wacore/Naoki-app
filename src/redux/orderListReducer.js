@@ -86,47 +86,52 @@ const orderListReducer = (state = initialState, action) => {
       };
 
     case orderActionType.ADD_TO_LIST:
-      const { is_done, order_info, orderlist } = action.payload;
-      if (order_info.type == "Dine-in") {
-        return {
-          ...state,
-          orderlist: [
-            ...state.orderlist,
-            {
-              orderId: action.payload.orderId,
-              is_done: is_done,
-              order_info: {
-                orderNum: order_info.orderNum,
-                peoNum: order_info.peoNum,
-                tableNum: order_info.tableNum,
-                type: "Dine-in",
-              },
-              orderlist: orderlist,
-            },
-          ],
-        };
-      } else {
-        const { customer_info } = action.payload;
-        return {
-          ...state,
-          orderlist: [
-            ...state.orderlist,
-            {
-              customer_info: {
-                name: customer_info.name,
-                phoneNum: customer_info.phoneNum,
-              },
-              is_done: is_done,
-              order_info: {
-                orderNum: order_info.orderNum,
-                pickupTime: parseInt(order_info.pickupTime),
-                type: "To-go",
-              },
-              orderlist: orderlist,
-            },
-          ],
-        };
-      }
+      return {
+        ...state,
+        orderlist: action.payload,
+      };
+
+    // const { is_done, order_info, orderlist } = action.payload;
+    // if (order_info.type == "Dine-in") {
+    //   return {
+    //     ...state,
+    //     orderlist: [
+    //       ...state.orderlist,
+    //       {
+    //         orderId: action.payload.orderId,
+    //         is_done: is_done,
+    //         order_info: {
+    //           orderNum: order_info.orderNum,
+    //           peoNum: order_info.peoNum,
+    //           tableNum: order_info.tableNum,
+    //           type: "Dine-in",
+    //         },
+    //         orderlist: orderlist,
+    //       },
+    //     ],
+    //   };
+    // } else {
+    //   const { customer_info } = action.payload;
+    //   return {
+    //     ...state,
+    //     orderlist: [
+    //       ...state.orderlist,
+    //       {
+    //         customer_info: {
+    //           name: customer_info.name,
+    //           phoneNum: customer_info.phoneNum,
+    //         },
+    //         is_done: is_done,
+    //         order_info: {
+    //           orderNum: order_info.orderNum,
+    //           pickupTime: parseInt(order_info.pickupTime),
+    //           type: "To-go",
+    //         },
+    //         orderlist: orderlist,
+    //       },
+    //     ],
+    //   };
+    // }
 
     case orderActionType.REMOVE_FROM_LIST:
       return {
@@ -193,8 +198,7 @@ const orderListReducer = (state = initialState, action) => {
       orderIndex = getOrderIndex(newArray, action.payload.orderNum);
       itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
 
-      newArray[orderIndex].orderlist[itemIndex].addition =
-        action.payload.addition;
+      newArray[orderIndex].orderlist[itemIndex].desc = action.payload.addition;
       return {
         ...state,
         orderlist: newArray,

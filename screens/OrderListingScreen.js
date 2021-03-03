@@ -5,7 +5,7 @@ import ListItem from "../components/ListItem";
 import ListItemSeparator from "../components/ListItemSeparator";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
 import { useSelector, useDispatch } from "react-redux";
-import { removeOrderFromList } from "../src/redux/orderListAction";
+import { addList, removeOrderFromList } from "../src/redux/orderListAction";
 import useApi from "../hooks/useApi";
 import orderApi from "../API/order";
 
@@ -15,21 +15,23 @@ export default function OrderListingScreen({ navigation, route }) {
   const orderlist = useSelector((state) => state.orderlist);
   const dispatch = useDispatch();
 
-  const getOrderAPI = useApi(orderApi.getOrder);
+  const { request, data } = useApi(orderApi.getOrder);
 
   useEffect(() => {
-    getOrderAPI.request();
-  }, []);
+    handleGetOrderApi();
+  }, [orderlist]);
 
-  console.log("orderlist from API");
-  console.log(getOrderAPI.data);
-
+  const handleGetOrderApi = async () => {
+    const result = await orderApi.getOrder();
+    if (!result.ok) return alert("Cannot fetch orders");
+    dispatch(addList(result.data));
+  };
   return (
     <View style={styles.container}>
       {orderlist && (
         <FlatList
           data={orderlist}
-          keyExtractor={(orderlist) => orderlist.order_info.orderNum.toString()}
+          keyExtractor={(orderlist) => orderlist._id.toString()}
           renderItem={({ item }) => (
             <ListItem
               orderNum={item.order_info.orderNum}
