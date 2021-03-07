@@ -89,7 +89,6 @@ export default function NewOrderScreen({ navigation }) {
       const result = await orderApi.addOrder(order);
 
       if (!result.ok) return console.log(result);
-      alert("Success");
       // dispatch(addList(order));
       dispatch(setOrderNum());
       dispatch(resetOrder());
@@ -158,7 +157,7 @@ export default function NewOrderScreen({ navigation }) {
       />
       <AppButton
         title="Log out"
-        appStyle={{ backgroundColor: colors.primary }}
+        appStyle={{ backgroundColor: colors.primary, marginVertical: 10 }}
         onPress={logOut}
       />
       {orderItems && (

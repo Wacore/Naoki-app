@@ -25,13 +25,13 @@ let newArray, orderIndex, itemIndex;
 
 const getOrderIndex = (newArray, orderNum) => {
   return _.findIndex(newArray, function (o) {
-    return o.order_info.orderNum == orderNum;
+    return o._id == orderNum;
   });
 };
 
 const getItemIndex = (newArray, orderIndex, itemId) => {
   return _.findIndex(newArray[orderIndex].orderlist, function (i) {
-    return i.itemId == itemId;
+    return i._id == itemId;
   });
 };
 
@@ -68,10 +68,11 @@ const orderListReducer = (state = initialState, action) => {
       // newArray.map((o) =>
       //   o.orderId == action.payload ? { ...o, is_done: true } : o
       // );
-      let index = _.findIndex(newArray, { orderId: action.payload });
+      let index = _.findIndex(newArray, { _id: action.payload });
+      console.log(index);
       newArray[index].is_done = true;
       alert("Done");
-      return { ...state, orderlist: newArray };
+      return { ...state };
 
     case orderActionType.RESET_ORDER:
       return {
@@ -137,19 +138,23 @@ const orderListReducer = (state = initialState, action) => {
       return {
         ...state,
         orderlist: state.orderlist.filter(
-          (order) => order.orderId !== action.payload
+          (order) => order._id !== action.payload
         ),
       };
 
     case orderActionType.UPDATE_SENT_ITEM:
       newArray = [...state.orderlist];
 
-      orderIndex = _.findIndex(newArray, function (o) {
-        return o.order_info.orderNum == action.payload.orderNum;
-      });
-      itemIndex = _.findIndex(newArray[orderIndex].orderlist, function (i) {
-        return i.itemId == action.payload.itemId;
-      });
+      // orderIndex = _.findIndex(newArray, function (o) {
+      //   return o._id == action.payload.orderNum;
+      // });
+
+      // itemIndex = _.findIndex(newArray[orderIndex].orderlist, function (i) {
+      //   return i._id == action.payload.itemId;
+      // });
+
+      orderIndex = getOrderIndex(newArray, action.payload.orderNum);
+      itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
       newArray[orderIndex].orderlist[itemIndex].isSent = true;
       return {
         ...state,
@@ -209,6 +214,8 @@ const orderListReducer = (state = initialState, action) => {
 
       orderIndex = getOrderIndex(newArray, action.payload.orderNum);
       itemIndex = getItemIndex(newArray, orderIndex, action.payload.itemId);
+
+      console.log(orderIndex, itemIndex);
       // _(newArray[orderIndex].orderlist).slice(itemIndex, 1).value();
       newArray[orderIndex].orderlist.splice(itemIndex, 1);
       return {

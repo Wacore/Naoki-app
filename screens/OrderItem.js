@@ -28,6 +28,7 @@ export default function OrderItem({
   onRemoveOrder,
   itemId,
   orderNum,
+  onHandleUpdateOrder,
 }) {
   const isEdit = useSelector((state) => state.isEdit);
 
