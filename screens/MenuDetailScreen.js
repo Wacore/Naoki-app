@@ -14,6 +14,8 @@ import {
   addOrder,
   updateOrderListAdd,
 } from "../src/redux/orderListAction";
+import orderApi from "../API/order";
+import order from "../API/order";
 
 export default function MenuDetailScreen({ navigation, route }) {
   const item = route.params;
@@ -25,22 +27,36 @@ export default function MenuDetailScreen({ navigation, route }) {
   );
 
   const isEdit = useSelector((state) => state.isEdit);
+  const currentOrderNum = useSelector((state) => state.currentOrderNum);
 
   const handleSubmit = () => {
     let itemId = Math.floor(100000 + Math.random() * 900000);
-    let menuItem = {
-      itemId,
-      menuItemId: item._id,
-      name: item.name,
-      amount: selectedItemAmount,
-      addition: selecteditemAddition,
-      type: item.type,
-      isSent: false,
-    };
+
     if (!isEdit) {
+      let menuItem = {
+        itemId,
+        menuItemId: item._id,
+        name: item.name,
+        amount: selectedItemAmount,
+        addition: selecteditemAddition,
+        type: item.type,
+        isSent: false,
+      };
       dispatch(addOrder(menuItem));
       navigation.navigate("Add");
     } else {
+      // handleUpdateAddItem();
+      let menuItem = {
+        _id: itemId,
+        amount: selectedItemAmount,
+        desc: selecteditemAddition,
+        isSent: false,
+        menu: {
+          _id: item._id,
+          name: item.name,
+          type: item.type,
+        },
+      };
       dispatch(updateOrderListAdd(menuItem));
       navigation.goBack();
     }
@@ -48,6 +64,20 @@ export default function MenuDetailScreen({ navigation, route }) {
     dispatch(resetSelectedAmount());
     dispatch(resetSelectedAddition());
   };
+
+  // const handleUpdateAddItem = async () => {
+  //   let dishItem = {
+  //     desc: selecteditemAddition,
+  //     amount: selectedItemAmount,
+  //     isSent: false,
+  //     menu: item._id,
+  //   };
+  //   const response = await orderApi.updateOrderAddItem(
+  //     currentOrderNum,
+  //     dishItem
+  //   );
+  //   if (!response.ok) return console.log(response);
+  // };
 
   useEffect(() => {
     console.log(item);

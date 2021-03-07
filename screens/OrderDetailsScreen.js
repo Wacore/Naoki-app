@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -19,22 +19,49 @@ import {
   setEdit,
   updateItemSent,
   setCurrentOrder,
-  finishOrder,
 } from "../src/redux/orderListAction";
+import orderApi from "../API/order";
 
 export default function OrderDetailsScreen({ route, navigation }) {
-  const { orderNum } = route.params;
+  const { orderNum, order_id } = route.params;
   const dispatch = useDispatch();
 
   const orderItems = useSelector((state) => state.orderlist);
   const isEdit = useSelector((state) => state.isEdit);
-  const { orderId, order_info, orderlist, customer_info } = orderItems.filter(
-    (o) => o.order_info.orderNum == orderNum
+
+  const { order_info, orderlist, customer_info } = orderItems.filter(
+    (o) => o._id == order_id
   )[0];
 
   const handleEditOrder = () => {
     dispatch(setEdit(true));
-    dispatch(setCurrentOrder(orderNum));
+    dispatch(setCurrentOrder(order_id));
+  };
+
+  const handleUpdateOrder = async (reduxFunc) => {
+    dispatch(reduxFunc());
+
+    const newOrderlist = _.cloneDeep(orderlist);
+    const factoredList = factoringOrder(newOrderlist);
+
+    const result = await orderApi.updateOrder(order_id, {
+      orderlist: factoredList,
+    });
+    if (!result.ok) return console.log(result);
+    alert("updated");
+  };
+
+  useEffect(() => {
+    console.log(orderlist);
+  }, []);
+
+  const factoringOrder = (newOrderlist) => {
+    const list = newOrderlist;
+    list.map((l) => {
+      l.menu = l.menu._id;
+      delete l._id;
+    });
+    return list;
   };
 
   let orderListSorted = sortingOrders(orderlist);
@@ -61,7 +88,9 @@ export default function OrderDetailsScreen({ route, navigation }) {
             <TouchableOpacity onPress={() => navigation.navigate("Menu")}>
               <AppText appStyle={{ color: colors.primary }}>Add</AppText>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => dispatch(setEdit(false))}>
+            <TouchableOpacity
+              onPress={() => handleUpdateOrder(() => setEdit(false))}
+            >
               <AppText appStyle={{ color: colors.primary }}>Done</AppText>
             </TouchableOpacity>
           </>
@@ -81,10 +110,12 @@ export default function OrderDetailsScreen({ route, navigation }) {
             amount={item.amount}
             addition={item.desc}
             isSent={item.isSent}
-            orderNum={orderNum}
+            orderNum={order_id}
+            onHandleUpdateOrder={handleUpdateOrder}
             onFinishItem={() =>
-              dispatch(
-                updateItemSent({ itemId: item.itemId, orderNum: orderNum })
+              handleUpdateOrder(
+                () => updateItemSent({ itemId: item._id, orderNum: order_id }),
+                item
               )
             }
           />
@@ -93,14 +124,6 @@ export default function OrderDetailsScreen({ route, navigation }) {
           <Text style={styles.headerTitle}>{title}</Text>
         )}
       />
-      <TouchableOpacity
-        style={styles.startContainer}
-        onPress={() => dispatch(finishOrder(orderId))}
-      >
-        <Text style={{ color: "white", fontSize: 20, fontWeight: "500" }}>
-          Done
-        </Text>
-      </TouchableOpacity>
     </Screen>
   );
 }

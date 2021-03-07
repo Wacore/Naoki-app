@@ -11,12 +11,16 @@ export default function ListItem({
   type,
   tableNum,
   renderRightAction,
+  renderLeftAction,
   onPress,
   name,
   pickupTime,
 }) {
   return (
-    <Swipeable renderRightActions={renderRightAction}>
+    <Swipeable
+      renderRightActions={renderRightAction}
+      renderLeftActions={renderLeftAction}
+    >
       <TouchableOpacity underlayColor={colors.white} onPress={onPress}>
         <View style={styles.container}>
           <View style={styles.numBox}>
