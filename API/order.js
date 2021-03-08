@@ -23,10 +23,16 @@ const removeOrder = (id) => {
   return client.delete(newEndpoint);
 };
 
+const alertOrder = (id, serverId) => {
+  let newEndpoint = `${endpoint}/${id}/messaging`;
+  return client.post(newEndpoint, serverId);
+};
+
 export default {
   getOrder,
   addOrder,
   updateOrder,
   updateOrderAddItem,
   removeOrder,
+  alertOrder,
 };

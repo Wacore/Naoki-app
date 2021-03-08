@@ -21,6 +21,7 @@ import {
   setCurrentOrder,
 } from "../src/redux/orderListAction";
 import orderApi from "../API/order";
+import { Notifications } from "expo";
 
 export default function OrderDetailsScreen({ route, navigation }) {
   const { orderNum, order_id } = route.params;
@@ -48,7 +49,14 @@ export default function OrderDetailsScreen({ route, navigation }) {
       orderlist: factoredList,
     });
     if (!result.ok) return console.log(result);
-    alert("updated");
+    showNotification();
+  };
+
+  const showNotification = () => {
+    Notifications.presentLocalNotificationAsync({
+      title: "Updated",
+      body: "The order has been updated!",
+    });
   };
 
   useEffect(() => {
@@ -82,7 +90,6 @@ export default function OrderDetailsScreen({ route, navigation }) {
             <AppText>Time: {order_info.pickupTime}</AppText>
           </>
         )}
-
         {isEdit ? (
           <>
             <TouchableOpacity onPress={() => navigation.navigate("Menu")}>
