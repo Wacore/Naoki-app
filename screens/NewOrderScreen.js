@@ -40,7 +40,7 @@ export default function NewOrderScreen({ navigation }) {
     orderlist,
   } = useSelector((state) => state);
 
-  const { logOut } = useAuth();
+  const { user, logOut } = useAuth();
 
   const initialList = numbers;
 
@@ -69,6 +69,7 @@ export default function NewOrderScreen({ navigation }) {
 
       let order = {
         is_done: false,
+        serverId: user._id,
         order_info: {
           orderNum: orderNum,
           type: type ? "Dine-in" : "To-go",
@@ -99,7 +100,7 @@ export default function NewOrderScreen({ navigation }) {
   };
 
   React.useEffect(() => {
-    // console.log(orderlist);
+    // console.log(user);
   });
 
   return (

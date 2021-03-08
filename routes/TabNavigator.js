@@ -10,16 +10,36 @@ import OrdersStack from "./OrderStack";
 import NewOrderButton from "./NewOrderButton";
 import NewStack from "./NewStack";
 import menuApi from "../API/menu";
+import expoPushTokenApi from "../API/expoPushToken";
 import useApi from "../hooks/useApi";
 import MenuContext from "../menu/context";
+import { Notifications } from "expo";
+import * as Permission from "expo-permissions";
+import useAuth from "../auth/useAuth";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   const { request, data, error } = useApi(menuApi.getMenu);
+  const { user } = useAuth();
   useEffect(() => {
     request();
+    registerForPushNotifications();
+    Notifications.addListener((notification) => console.log(notification));
   }, []);
+
+  const registerForPushNotifications = async () => {
+    try {
+      const permission = await Permission.askAsync(Permission.NOTIFICATIONS);
+      if (!permission.granted) return;
+
+      const token = await Notifications.getExpoPushTokenAsync();
+
+      expoPushTokenApi.register({ id: user._id, token: token });
+    } catch (error) {
+      console.log("Error getting a push token", error);
+    }
+  };
 
   return (
     <NavigationContainer>
