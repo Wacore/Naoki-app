@@ -13,11 +13,7 @@ import PrepItem from "../components/PrepItem";
 import PrepAddPrep from "../components/PrepAddPrep";
 
 export default function PrepListScreen() {
-  const [prepItem, setPrepItem] = useState([
-    { text: "item 1", key: 1 },
-    { text: "item 2", key: 2 },
-    { text: "item 3", key: 3 },
-  ]);
+  const [prepItem, setPrepItem] = useState([]);
 
   const [completedItem, setCompletedItem] = useState([]);
   const [history, setHistory] = useState(false);
@@ -128,5 +124,6 @@ const styles = StyleSheet.create({
     color: "dodgerblue",
     fontSize: 16,
     fontWeight: "400",
+    padding: 10,
   },
 });

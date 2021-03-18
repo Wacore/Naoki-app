@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, FlatList } from "react-native";
 
 import AppButton from "../components/AppButton";
@@ -7,7 +7,6 @@ import AppSwitch from "../components/AppSwitch";
 import colors from "../config/colors";
 import numbers from "../data/orderNum";
 import Screen from "../components/Screen";
-import menu from "../data/menu.js";
 import OrderItem from "./OrderItem";
 import AppTextInput from "../components/AppTextInput";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +19,6 @@ import {
   setPhoneNum,
   setPickUpTime,
   removeOrder,
-  addList,
   resetOrder,
 } from "../src/redux/orderListAction";
 
@@ -37,7 +35,6 @@ export default function NewOrderScreen({ navigation }) {
     phoneNumber,
     pickUpTime,
     orderItems,
-    orderlist,
   } = useSelector((state) => state);
 
   const { user, logOut } = useAuth();
@@ -45,15 +42,6 @@ export default function NewOrderScreen({ navigation }) {
   const initialList = numbers;
 
   const dispatch = useDispatch();
-  // const { request } = useApi(orderApi.addOrder);
-
-  const handleAddOrderList = (res) => {
-    let data = menu.filter((a) => a.id == res.id);
-    data[0].amount = res.amount;
-    data[0].addition = res.addition;
-    // data[0].isSent = false;
-    setOrderList([...orderList, data[0]]);
-  };
 
   const handleSubmit = async () => {
     if (orderItems.length != 0) {
@@ -90,18 +78,12 @@ export default function NewOrderScreen({ navigation }) {
       const result = await orderApi.addOrder(order);
 
       if (!result.ok) return console.log(result);
-      // dispatch(addList(order));
       dispatch(setOrderNum());
       dispatch(resetOrder());
-      // console.log(order);
 
       navigation.navigate("Orders", order);
     }
   };
-
-  React.useEffect(() => {
-    // console.log(user);
-  });
 
   return (
     <Screen appStyle={styles.container}>
@@ -146,6 +128,12 @@ export default function NewOrderScreen({ navigation }) {
         </>
       )}
       <AppButton
+        title="Log out"
+        appStyle={styles.addButton}
+        appText={styles.addButtonText}
+        onPress={logOut}
+      />
+      <AppButton
         title="Add"
         appStyle={styles.addButton}
         appText={styles.addButtonText}
@@ -156,11 +144,7 @@ export default function NewOrderScreen({ navigation }) {
         appStyle={{ backgroundColor: colors.primary }}
         onPress={handleSubmit}
       />
-      <AppButton
-        title="Log out"
-        appStyle={{ backgroundColor: colors.primary, marginVertical: 10 }}
-        onPress={logOut}
-      />
+
       {orderItems && (
         <FlatList
           data={orderItems}
