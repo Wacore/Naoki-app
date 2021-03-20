@@ -11,6 +11,9 @@ import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
 import logger from "./utility/logger";
 import { AppLoading } from "expo";
+import Screen from "./components/Screen";
+import AppPicker from "./components/AppPicker";
+import numbers from "./data/orderNum";
 
 logger.start();
 
@@ -19,6 +22,8 @@ const store = createStore(orderListReducer);
 export default function App() {
   const [user, setUser] = useState();
   const [isReady, setIsReady] = useState(false);
+
+  const [number, setNumber] = useState(1);
 
   const restoreUser = async () => {
     const user = await authStorage.getUser();

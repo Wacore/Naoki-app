@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Picker from "react-native-wheel-picker";
+import Picker from "@gregfrench/react-native-wheel-picker";
 import { useDispatch } from "react-redux";
 import { setPeopleNum, setTableNum } from "../src/redux/orderListAction";
 
