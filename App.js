@@ -9,8 +9,10 @@ import { Provider } from "react-redux";
 import orderListReducer from "./src/redux/orderListReducer";
 import AuthContext from "./auth/context";
 import authStorage from "./auth/storage";
-
+import logger from "./utility/logger";
 import { AppLoading } from "expo";
+
+logger.start();
 
 const store = createStore(orderListReducer);
 
