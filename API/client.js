@@ -1,10 +1,9 @@
-import storage from "../auth/storage";
-
-const { create } = require("apisauce");
 import authStorage from "../auth/storage";
+import settings from "../config/settings";
+const { create } = require("apisauce");
 
 const apiClient = create({
-  baseURL: "https://naokijc-api.herokuapp.com/",
+  baseURL: settings.apiURL,
 });
 
 apiClient.addAsyncRequestTransform(async (request) => {
