@@ -2,8 +2,9 @@
   "expo": {
     "name": "NaoKi",
     "slug": "NaoKi",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
+    "privacy": "unlisted",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -16,11 +17,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hodda.naokiJC",
+      "buildNumber": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
